@@ -1,0 +1,223 @@
+#!/user/bin/env python3
+
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import sys
+import logging
+import subprocess
+import os
+
+logging.basicConfig(format = "%(message)s",level = logging.INFO)
+
+class worker(QObject):
+    def __init__(self):
+        super().__init__()
+    
+    finished = pyqtSignal()
+    
+    
+    def clicked_start(self):
+        print("DAQCommand start")
+        #subprocess.Popen("DAQCommand start")
+        os.system("DAQCommand start")
+        self.finished.emit()
+        
+    def clicked_status(self):
+        logging.info("goooo")
+        self.finished.emit()
+                
+    def clicked_stop(self):
+        print("DAQCommand stop")
+        #subprocess.popen("DAQCommand stop")
+        os.system("DAQCommand stop")
+
+        self.finished.emit()
+        
+    def clicked_print(self):
+        print("DAQCommand print")
+        os.system("DAQCommand print")
+        self.finished.emit()
+
+class gui(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        
+        
+        #set name and size
+        self.setWindowTitle("DAQCommand Window")
+        self.title = 'DAQCommand GUI'
+        self.left = 10
+        self.top = 10
+        self.width = 400
+        self.height = 300
+        self.initUI()
+        
+        #set the button
+        self.SetStartButton()
+        self.SetStopButton()
+        self.SetStatusButton()
+        self.SetPrintButton()
+        self.SetComboPrint()
+        
+        self.show()
+        
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        
+        
+       
+        
+    def SetComboPrint(self):
+        self.comboprint = QComboBox(self)
+        self.comboprint.move(350,25)
+        self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
+        
+    # To connect a combo box use: combo.activated[str].connect(self.onChanged)
+        
+    def SetStartButton(self):
+        self.startbtn = QPushButton("start",self)
+        self.startbtn.move(25,25)
+        self.startbtn.clicked.connect(self.longrun_start)
+        
+        
+    def SetStopButton(self):
+        self.stopbtn = QPushButton("Stop",self)
+        self.stopbtn.move(150,25)
+        self.stopbtn.clicked.connect(self.longrun_stop)
+    
+    
+    
+    def SetStatusButton(self):
+        self.statusbtn = QPushButton("status",self)
+        self.statusbtn.move(250,25)
+        self.statusbtn.clicked.connect(self.longrun_status)
+        
+    def SetPrintButton(self):
+        self.printbtn = QPushButton("print", self)
+        self.printbtn.move(450,25)
+        self.printbtn.clicked.connect(self.longrun_print)
+  
+    def longrun_start(self):
+        # Create a QThread object
+        self.threadstart = QThread()
+        # Create a worker object
+        self.workerstart = worker()
+        # Move worker to the thread
+        self.workerstart.moveToThread(self.threadstart)
+        # Connect signals and slots
+        self.threadstart.started.connect(self.workerstart.clicked_start)
+        self.workerstart.finished.connect(self.threadstart.quit)
+        self.workerstart.finished.connect(self.workerstart.deleteLater)
+        self.threadstart.finished.connect(self.threadstart.deleteLater)
+        # Start the thread
+        self.threadstart.start()
+        # Final resets
+        self.startbtn.setEnabled(False)
+        self.threadstart.finished.connect(
+            lambda: self.startbtn.setEnabled(True)
+        )
+        '''
+        self.threadstart.finished.connect(
+            lambda: self.stepLabel.setText("Long-Running Step: 0")
+        )
+    '''
+    def longrun_stop(self):
+        # Create a QThread object
+        self.threadstop = QThread()
+        # Create a worker object
+        self.workerstop = worker()
+        # Move worker to the thread
+        self.workerstop.moveToThread(self.threadstop)
+        # Connect signals and slots
+        self.threadstop.started.connect(self.workerstop.clicked_stop)
+        self.workerstop.finished.connect(self.threadstop.quit)
+        self.workerstop.finished.connect(self.workerstop.deleteLater)
+        self.threadstop.finished.connect(self.threadstop.deleteLater)
+    
+        # Start the thread
+        self.threadstop.start()
+        # Final resets
+        self.stopbtn.setEnabled(False)
+        self.threadstop.finished.connect(
+            lambda: self.stopbtn.setEnabled(True)
+        )
+        '''
+        self.threadstop.finished.connect(
+            lambda: self.stepLabel.setText("Long-Running Step: 0")
+        )
+        '''
+    def longrun_status(self):
+        # Create a QThread object
+        self.threadstatus = QThread()
+        # Create a worker object
+        self.workerstatus = worker()
+        # Move worker to the thread
+        self.workerstatus.moveToThread(self.threadstatus)
+        # Connect signals and slots
+        self.threadstatus.started.connect(self.workerstatus.clicked_status)
+        self.workerstatus.finished.connect(self.threadstatus.quit)
+        self.workerstatus.finished.connect(self.workerstatus.deleteLater)
+        self.threadstatus.finished.connect(self.threadstatus.deleteLater)
+        
+        # Start the thread
+        self.threadstatus.start()
+        # Final resets
+        self.statusbtn.setEnabled(False)
+        self.threadstatus.finished.connect(
+            lambda: self.statusbtn.setEnabled(True)
+        )
+        '''
+        self.threadstatus.finished.connect(
+            lambda: self.stepLabel.setText("Long-Running Step: 0")
+        )
+        '''
+    
+    def longrun_print(self):
+    # Create a QThread object
+        self.threadprint = QThread()
+    # create a worker object
+        self.workerprint = worker()
+    #Move worker to the thread
+        self.workerprint.moveToThread(self.threadprint)
+    #Connect signals and slots
+        self.threadprint.started.connect(self.workerprint.clicked_print)
+        self.workerprint.finished.connect(self.threadprint.quit)
+        self.workerprint.finished.connect(self.workerprint.deleteLater)
+        self.threadprint.finished.connect(self.threadprint.deleteLater)
+    
+    # Start the thread
+        self.threadprint.start()
+    #Final Results
+        self.printbtn.setEnabled(False)
+        self.threadprint.finished.connect(
+            lambda: self.printbtn.setEnabled(True)
+        )
+        '''
+        self.threadprint.finished.connect(
+            lambda: self.stepLabel.setText("Long-Running Step: 0")
+            )
+            '''
+    '''
+    def clicked_start(self):
+        print("DAQCommand start")
+        
+    def clicked_status(self):
+        alert = QMessageBox()
+        alert.setText("gooo")
+        alert.exec()
+        
+    def clicked_stop(self):
+        print("DAQCommand stop")
+    
+    def clicked_print(self):
+        print("DAQCommand print")
+    
+    '''
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = gui()
+    sys.exit(app.exec_())
+    
+        
