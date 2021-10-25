@@ -7,22 +7,37 @@ import sys
 import logging
 import subprocess
 import os
+import signal
+import time
 
 logging.basicConfig(format = "%(message)s",level = logging.INFO)
 
 class worker(QObject):
     def __init__(self):
         super().__init__()
-    
+        
+        self.p = None
+
+
     finished = pyqtSignal()
-    
-    
+
     def clicked_start(self):
         print("DAQCommand start")
-        #subprocess.Popen("DAQCommand start")
-        os.system("DAQCommand start")
+        p = subprocess.Popen("DAQCommand start", shell=True)
+        time.sleep(5)
+        pid = p.pid
+        tail_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell=True, stdout=subprocess.PIPE).communicate()[0]
+        tail_pid = int(tail_pid)
+        print("Tail PID:", tail_pid)
+        print("Process PID %d" % (pid))
+        os.kill(tail_pid, signal.SIGINT)
+        p.terminate()
         self.finished.emit()
-        
+    
+    def process_finished(self):
+        self.message("Process finished.")
+        self.p = None
+
     def clicked_status(self):
         logging.info("goooo")
         self.finished.emit()
@@ -118,11 +133,11 @@ class gui(QMainWindow):
         self.threadstart.finished.connect(
             lambda: self.startbtn.setEnabled(True)
         )
-        '''
+        ''' 
         self.threadstart.finished.connect(
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
-    '''
+        '''
     def longrun_stop(self):
         # Create a QThread object
         self.threadstop = QThread()
