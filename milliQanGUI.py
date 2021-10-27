@@ -33,25 +33,49 @@ class worker(QObject):
         os.kill(tail_pid, signal.SIGINT)
         p.terminate()
         self.finished.emit()
-    
+    '''
     def process_finished(self):
         self.message("Process finished.")
         self.p = None
-
+    '''
+    
     def clicked_status(self):
-        logging.info("goooo")
+        p1.subprocess.Popen("DAQCommand status", shell= True)
+        time.sleep(5)
+        pid1 = p1.pid
+        tail1_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail1_pid = int(tail1_pid)
+        print("tail pid", tail1_pid)
+        os.kill(tail1_pid,singal.SIGINT)
+        p1.terminate()
         self.finished.emit()
                 
     def clicked_stop(self):
         print("DAQCommand stop")
         #subprocess.popen("DAQCommand stop")
-        os.system("DAQCommand stop")
+        p2.subprocess.Popen("DAQCommand stop", shell= True)
+        time.sleep(5)
+        pid2 = p2.pid
+        tail2_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail2_pid = int(tail2_pid)
+        print("tail pid", tail2_pid)
+        os.kill(tail2_pid,singal.SIGINT)
+        p2.terminate()
+
 
         self.finished.emit()
         
     def clicked_print(self):
         print("DAQCommand print")
-        os.system("DAQCommand print")
+        p3.subprocess.Popen("DAQCommand print", shell= True)
+        time.sleep(5)
+        pid3 = p3.pid
+        tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail3_pid = int(tail3_pid)
+        print("tail pid", tail3_pid)
+        os.kill(tail3_pid,singal.SIGINT)
+        p3.terminate()
+
         self.finished.emit()
 
 class gui(QMainWindow):
@@ -64,7 +88,7 @@ class gui(QMainWindow):
         self.title = 'DAQCommand GUI'
         self.left = 10
         self.top = 10
-        self.width = 400
+        self.width = 600
         self.height = 300
         self.initUI()
         
@@ -74,6 +98,7 @@ class gui(QMainWindow):
         self.SetStatusButton()
         self.SetPrintButton()
         self.SetComboPrint()
+        self.Setlabel()
         
         self.show()
         
@@ -82,36 +107,42 @@ class gui(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
         
         
-       
+    def Setlabel(self):
+        self.label = QLabel(self)
+        self.label.setText("Button to operate the DAQCommand")
+        self.label.adjustSize()
+        self.label.move(200,50)
+        
+    
         
     def SetComboPrint(self):
         self.comboprint = QComboBox(self)
-        self.comboprint.move(350,25)
+        self.comboprint.move(350,150)
         self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
         
     # To connect a combo box use: combo.activated[str].connect(self.onChanged)
         
     def SetStartButton(self):
         self.startbtn = QPushButton("start",self)
-        self.startbtn.move(25,25)
+        self.startbtn.move(50,150)
         self.startbtn.clicked.connect(self.longrun_start)
         
         
     def SetStopButton(self):
         self.stopbtn = QPushButton("Stop",self)
-        self.stopbtn.move(150,25)
+        self.stopbtn.move(150,150)
         self.stopbtn.clicked.connect(self.longrun_stop)
     
     
     
     def SetStatusButton(self):
         self.statusbtn = QPushButton("status",self)
-        self.statusbtn.move(250,25)
+        self.statusbtn.move(250,150)
         self.statusbtn.clicked.connect(self.longrun_status)
         
     def SetPrintButton(self):
         self.printbtn = QPushButton("print", self)
-        self.printbtn.move(450,25)
+        self.printbtn.move(450,150)
         self.printbtn.clicked.connect(self.longrun_print)
   
     def longrun_start(self):
