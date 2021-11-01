@@ -9,6 +9,7 @@ import subprocess
 import os
 import signal
 import time
+import glob
 
 logging.basicConfig(format = "%(message)s",level = logging.INFO)
 
@@ -33,50 +34,46 @@ class worker(QObject):
         os.kill(tail_pid, signal.SIGINT)
         p.terminate()
         self.finished.emit()
-    '''
-    def process_finished(self):
-        self.message("Process finished.")
-        self.p = None
-    '''
+
     
     def clicked_status(self):
-        p1.subprocess.Popen("DAQCommand status", shell= True)
+        p1 = subprocess.Popen("DAQCommand status", shell= True)
         time.sleep(5)
         pid1 = p1.pid
         tail1_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail1_pid = int(tail1_pid)
         print("tail pid", tail1_pid)
-        os.kill(tail1_pid,singal.SIGINT)
+        os.kill(tail1_pid,signal.SIGINT)
         p1.terminate()
         self.finished.emit()
                 
     def clicked_stop(self):
         print("DAQCommand stop")
         #subprocess.popen("DAQCommand stop")
-        p2.subprocess.Popen("DAQCommand stop", shell= True)
+        p2 = subprocess.Popen("DAQCommand stop", shell= True)
         time.sleep(5)
         pid2 = p2.pid
         tail2_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail2_pid = int(tail2_pid)
         print("tail pid", tail2_pid)
-        os.kill(tail2_pid,singal.SIGINT)
+        os.kill(tail2_pid,signal.SIGINT)
         p2.terminate()
-
 
         self.finished.emit()
         
     def clicked_print(self):
         print("DAQCommand print")
-        p3.subprocess.Popen("DAQCommand print", shell= True)
+        p3 = subprocess.Popen("DAQCommand print", shell= True)
         time.sleep(5)
         pid3 = p3.pid
         tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail3_pid = int(tail3_pid)
         print("tail pid", tail3_pid)
-        os.kill(tail3_pid,singal.SIGINT)
+        os.kill(tail3_pid,signal.SIGINT)
         p3.terminate()
 
         self.finished.emit()
+        
 
 class gui(QMainWindow):
     def __init__(self):
@@ -98,6 +95,7 @@ class gui(QMainWindow):
         self.SetStatusButton()
         self.SetPrintButton()
         self.SetComboPrint()
+        self.SetListButton()
         self.Setlabel()
         
         self.show()
@@ -144,7 +142,13 @@ class gui(QMainWindow):
         self.printbtn = QPushButton("print", self)
         self.printbtn.move(450,150)
         self.printbtn.clicked.connect(self.longrun_print)
-  
+    '''
+    def SetListButton(self):
+        self.listbtn = QPushButton("list",self)
+        self.listbtn.move(150,250)
+        self.listbtn.clicked.connect(self.clicked_list)
+    '''
+    
     def longrun_start(self):
         # Create a QThread object
         self.threadstart = QThread()
@@ -261,6 +265,14 @@ class gui(QMainWindow):
         print("DAQCommand print")
     
     '''
+    def clicked_list(self):
+        onlyfile = []
+        for file in glob.glob("*.py"):
+            onlyfile.append(file)
+            
+        for file in onlyfile:
+            print(file,'\n')
+          
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = gui()
