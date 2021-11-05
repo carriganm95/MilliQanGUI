@@ -76,6 +76,7 @@ class worker(QObject):
         
 
 class gui(QMainWindow):
+  
     def __init__(self):
         super().__init__()
         
@@ -88,7 +89,7 @@ class gui(QMainWindow):
         self.width = 600
         self.height = 300
         self.initUI()
-        
+        self.onlyfile = []
         #set the button
         self.SetStartButton()
         self.SetStopButton()
@@ -97,8 +98,11 @@ class gui(QMainWindow):
         self.SetComboPrint()
         self.SetListButton()
         self.Setlabel()
+        self.SetCombolist()
+        self.SetCombolistButton()
         
         self.show()
+    
         
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -119,6 +123,30 @@ class gui(QMainWindow):
         self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
         
     # To connect a combo box use: combo.activated[str].connect(self.onChanged)
+    def SetCombolistButton(self):
+        self.printlistbtn = QPushButton("reconfigure", self)
+        self.printlistbtn.move(450,250)
+        self.printlistbtn.clicked.connect(self.on_clicled)
+        
+    def SetCombolist(self):
+        self.combolist = QComboBox(self)
+        self.combolist.move(350,250)
+        print(self.onlyfile)
+        self.combolist.addItems([])
+        #self.combolist.currentTextChanged.connect(self.updateCombo)
+        #self.combolist.currentTextChanged.connect(self.updateCombo)
+        self.combolist.currentTextChanged.connect(self.on_combobox_func)
+        
+    def on_combobox_func(self, text):                                                    # +++
+        self.current_text  = "DAQCommand reconfigure " + text
+        
+    def on_clicled(self):                                                                # +++
+        subprocess.Popen(self.current_text, shell= True)
+    
+    def updateCombo(self):
+        self.combolist.clear()
+        self.combolist.addItems(self.onlyfile)
+        
         
     def SetStartButton(self):
         self.startbtn = QPushButton("start",self)
@@ -142,12 +170,12 @@ class gui(QMainWindow):
         self.printbtn = QPushButton("print", self)
         self.printbtn.move(450,150)
         self.printbtn.clicked.connect(self.longrun_print)
-    '''
+    
     def SetListButton(self):
         self.listbtn = QPushButton("list",self)
         self.listbtn.move(150,250)
         self.listbtn.clicked.connect(self.clicked_list)
-    '''
+    
     
     def longrun_start(self):
         # Create a QThread object
@@ -266,13 +294,17 @@ class gui(QMainWindow):
     
     '''
     def clicked_list(self):
-        onlyfile = []
+        self.onlyfile =[]
         for file in glob.glob("*.py"):
-            onlyfile.append(file)
+            self.onlyfile.append(file)
             
-        for file in onlyfile:
+        for file in self.onlyfile:
             print(file,'\n')
-          
+        #self.combolist.currentTextChanged.connect(self.updateCombo)
+        #print(self.combolist.currentcurrentIndex)
+        #self.combolist.currentTextChanged.connect(self.updateCombo)
+        self.updateCombo()
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = gui()
