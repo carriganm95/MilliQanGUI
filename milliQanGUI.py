@@ -23,14 +23,11 @@ class worker(QObject):
     finished = pyqtSignal()
 
     def clicked_start(self):
-        print("DAQCommand start")
         p = subprocess.Popen("DAQCommand start", shell=True)
         time.sleep(5)
         pid = p.pid
         tail_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell=True, stdout=subprocess.PIPE).communicate()[0]
         tail_pid = int(tail_pid)
-        print("Tail PID:", tail_pid)
-        print("Process PID %d" % (pid))
         os.kill(tail_pid, signal.SIGINT)
         p.terminate()
         self.finished.emit()
@@ -42,33 +39,27 @@ class worker(QObject):
         pid1 = p1.pid
         tail1_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail1_pid = int(tail1_pid)
-        print("tail pid", tail1_pid)
         os.kill(tail1_pid,signal.SIGINT)
         p1.terminate()
         self.finished.emit()
                 
     def clicked_stop(self):
-        print("DAQCommand stop")
-        #subprocess.popen("DAQCommand stop")
         p2 = subprocess.Popen("DAQCommand stop", shell= True)
         time.sleep(5)
         pid2 = p2.pid
         tail2_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail2_pid = int(tail2_pid)
-        print("tail pid", tail2_pid)
         os.kill(tail2_pid,signal.SIGINT)
         p2.terminate()
 
         self.finished.emit()
         
     def clicked_print(self):
-        print("DAQCommand print")
         p3 = subprocess.Popen("DAQCommand print", shell= True)
         time.sleep(5)
         pid3 = p3.pid
         tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail3_pid = int(tail3_pid)
-        print("tail pid", tail3_pid)
         os.kill(tail3_pid,signal.SIGINT)
         p3.terminate()
 
@@ -131,14 +122,13 @@ class gui(QMainWindow):
     def SetCombolist(self):
         self.combolist = QComboBox(self)
         self.combolist.move(350,250)
-        print(self.onlyfile)
         self.combolist.addItems([])
         #self.combolist.currentTextChanged.connect(self.updateCombo)
         #self.combolist.currentTextChanged.connect(self.updateCombo)
         self.combolist.currentTextChanged.connect(self.on_combobox_func)
         
     def on_combobox_func(self, text):                                                    # +++
-        self.current_text  = "DAQCommand reconfigure " + text
+        self.current_text  = "DAQCommand reconfigure ../../config/" + text
         
     def on_clicled(self):                                                                # +++
         #subprocess.Popen(self.current_text, shell= True)
@@ -147,7 +137,6 @@ class gui(QMainWindow):
         pid3 = p3.pid
         tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail3_pid = int(tail3_pid)
-        print("tail pid", tail3_pid)
         os.kill(tail3_pid,signal.SIGINT)
         p3.terminate()
     
@@ -280,38 +269,14 @@ class gui(QMainWindow):
         self.threadprint.finished.connect(
             lambda: self.printbtn.setEnabled(True)
         )
-        '''
-        self.threadprint.finished.connect(
-            lambda: self.stepLabel.setText("Long-Running Step: 0")
-            )
-            '''
-    '''
-    def clicked_start(self):
-        print("DAQCommand start")
-        
-    def clicked_status(self):
-        alert = QMessageBox()
-        alert.setText("gooo")
-        alert.exec()
-        
-    def clicked_stop(self):
-        print("DAQCommand stop")
     
-    def clicked_print(self):
-        print("DAQCommand print")
-    
-    '''
     def clicked_list(self):
         self.onlyfile =[]
-        for file in glob.glob("*.py"):
-            self.onlyfile.append(file)
+        for filename in glob.glob("../../config/*.py"):
+            self.onlyfile.append(filename.split('/')[-1])
             
         for file in self.onlyfile:
-            print(file,'\n')
-        #self.combolist.currentTextChanged.connect(self.updateCombo)
-        #print(self.combolist.currentcurrentIndex)
-        #self.combolist.currentTextChanged.connect(self.updateCombo)
-        self.updateCombo()
+            print(filename,'\n')
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
