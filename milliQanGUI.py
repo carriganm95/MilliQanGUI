@@ -141,7 +141,15 @@ class gui(QMainWindow):
         self.current_text  = "DAQCommand reconfigure " + text
         
     def on_clicled(self):                                                                # +++
-        subprocess.Popen(self.current_text, shell= True)
+        #subprocess.Popen(self.current_text, shell= True)
+        p3 = subprocess.Popen(self.current_text, shell= True)
+        time.sleep(5)
+        pid3 = p3.pid
+        tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail3_pid = int(tail3_pid)
+        print("tail pid", tail3_pid)
+        os.kill(tail3_pid,signal.SIGINT)
+        p3.terminate()
     
     def updateCombo(self):
         self.combolist.clear()
