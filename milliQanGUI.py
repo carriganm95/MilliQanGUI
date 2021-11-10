@@ -277,6 +277,8 @@ class gui(QMainWindow):
             
         for file in self.onlyfile:
             print(filename,'\n')
+        self.updateCombo()
+
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
