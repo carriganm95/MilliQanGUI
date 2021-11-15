@@ -64,21 +64,31 @@ class worker(QObject):
         p3.terminate()
 
         self.finished.emit()
-        
+    '''
+    def readfile(self):
+        self.QTE = QTextEdit(self)
+        self.QTE.move(50,350)
+        self.QTE.resize(500,300)
+        f = open('/Users/mr-right/physics/research2/textexample.log')
+        while f :
+            contents = f.read()
+        self.QTE.setPlainText(contents)
+        self.finished.emit()
+    '''
 
 class gui(QMainWindow):
   
     def __init__(self):
         super().__init__()
         
-        
+        self.contents = ''
         #set name and size
         self.setWindowTitle("DAQCommand Window")
         self.title = 'DAQCommand GUI'
         self.left = 10
         self.top = 10
         self.width = 600
-        self.height = 300
+        self.height = 800
         self.initUI()
         self.onlyfile = []
         #set the button
@@ -91,7 +101,9 @@ class gui(QMainWindow):
         self.Setlabel()
         self.SetCombolist()
         self.SetCombolistButton()
-        
+        self.SetTextEdit()
+        self.SetqTimer()
+    
         self.show()
     
         
@@ -172,8 +184,27 @@ class gui(QMainWindow):
         self.listbtn = QPushButton("list",self)
         self.listbtn.move(150,250)
         self.listbtn.clicked.connect(self.clicked_list)
+        
+    def SetTextEdit(self):
+        self.QTE = QTextEdit(self)
+        self.QTE.move(50,350)
+        self.QTE.resize(500,300)
+        #self.QTE.setObjectName("status information")
+        #self.QTE.setPlainText(self.contents)
     
-    
+        
+    def SetqTimer(self):
+        self.qtimer = QTimer()
+        self.qtimer.setInterval(1000)
+        self.qtimer.timeout.connect(self.refreshText)
+        self.qtimer.start()
+        
+    def refreshText(self):
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
+            contents = f.read()
+        self.QTE.setPlainText(contents)
+        QCoreApplication.processEvents()
+        
     def longrun_start(self):
         # Create a QThread object
         self.threadstart = QThread()
@@ -277,6 +308,7 @@ class gui(QMainWindow):
             
         for file in self.onlyfile:
             print(filename,'\n')
+        
         self.updateCombo()
 
         
