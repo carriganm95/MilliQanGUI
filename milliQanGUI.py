@@ -10,6 +10,7 @@ import os
 import signal
 import time
 import glob
+import select
 
 logging.basicConfig(format = "%(message)s",level = logging.INFO)
 
@@ -81,7 +82,8 @@ class gui(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.contents = ''
+        self.contents = []
+        self.content_temp = []
         #set name and size
         self.setWindowTitle("DAQCommand Window")
         self.title = 'DAQCommand GUI'
@@ -189,6 +191,8 @@ class gui(QMainWindow):
         self.QTE = QTextEdit(self)
         self.QTE.move(50,350)
         self.QTE.resize(500,300)
+        with open('/var/log/MilliDAQ.log') as f :
+            self.contents = f.readlines()
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
     
@@ -200,10 +204,18 @@ class gui(QMainWindow):
         self.qtimer.start()
         
     def refreshText(self):
-        with open('/Users/mr-right/physics/research2/textexample.log') as f :
-            contents = f.read()
-        self.QTE.setPlainText(contents)
-        QCoreApplication.processEvents()
+        self.content_temp = self.contents
+        linenumber = len(self.content_temp)
+        with open('/var/log/MilliDAQ.log') as f :
+            self.contents = f.readlines()
+
+        if self.contents != self.content_temp:
+            for i in self.contents[linenumber-1:-1]:
+                self.QTE.append(i)
+                QCoreApplication.processEvents()
+
+        
+
         
     def longrun_start(self):
         # Create a QThread object
