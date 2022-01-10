@@ -12,7 +12,9 @@ import time
 import glob
 import select
 
+
 logging.basicConfig(format = "%(message)s",level = logging.INFO)
+
 
 class worker(QObject):
     def __init__(self):
@@ -66,53 +68,27 @@ class worker(QObject):
 
         self.finished.emit()
         
-
-    '''
-    def readfile(self):
-        self.QTE = QTextEdit(self)
-        self.QTE.move(50,350)
-        self.QTE.resize(500,300)
-        f = open('/Users/mr-right/physics/research2/textexample.log')
-        while f :
-            contents = f.read()
-        self.QTE.setPlainText(contents)
-        self.finished.emit()
-    '''
-
-class gui(QMainWindow):
+class TabWidget(QDialog):
   
     def __init__(self):
         super().__init__()
-        
-        self.contents = []
-        self.content_temp = []
-        #set name and size
-        #self.setWindowTitle("DAQCommand Window")
+   
         self.title = 'DAQCommand GUI'
         self.left = 10
         self.top = 10
         self.width = 1000
         self.height = 800
         self.initUI()
-        self.onlyfile = []
-        #set the button
-        self.SetStartButton()
-        self.SetStopButton()
-        self.SetStatusButton()
-        self.SetPrintButton()
-        self.SetComboPrint()
-        self.SetListButton()
-        self.Setlabel()
-        self.SetCombolist()
-        self.SetCombolistButton()
-        self.SetTextEdit()
-        self.SetqTimer()
-        self.Setimage()
-        self.SetHelpButton()
         
-        self.show()
-    
+        self.tabs  = QTabWidget()
+        self.tabs.addTab(tab1(),"Tab 1")
+        self.tabs.addTab(tab2(),"Tab 2")
         
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+        
+        #self.show()
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -149,6 +125,30 @@ class gui(QMainWindow):
             QApplication.setStyle(QStyleFactory.create('Fusion'))
             QApplication.setPalette(darkPalette)
             
+class tab1(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.contents = []
+        self.content_temp = []
+        self.onlyfile = []
+
+        self.SetStartButton()
+        self.SetStartButton()
+        self.SetStopButton()
+        self.SetStatusButton()
+        self.SetPrintButton()
+        self.SetComboPrint()
+        self.SetListButton()
+        self.Setlabel()
+        self.SetCombolist()
+        self.SetCombolistButton()
+        self.SetTextEdit()
+        self.SetqTimer()
+        self.Setimage()
+        self.SetHelpButton()
+        
+        self.show()
+
     def Setimage(self):
         self.label = QLabel(self)
         self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
@@ -166,24 +166,24 @@ class gui(QMainWindow):
         self.label.adjustSize()
     
         
-    def SetComboPrint(self):
-        self.comboprint = QComboBox(self)
-        self.comboprint.move(450,150)
-        self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
-        
     # To connect a combo box use: combo.activated[str].connect(self.onChanged)
     def SetCombolistButton(self):
         self.printlistbtn = QPushButton("reconfigure", self)
-        self.printlistbtn.move(550,250)
+        self.printlistbtn.move(550,200)
         self.printlistbtn.clicked.connect(self.on_clicled)
         
     def SetCombolist(self):
         self.combolist = QComboBox(self)
-        self.combolist.move(450,250)
+        self.combolist.move(450,200)
         self.combolist.addItems([])
         #self.combolist.currentTextChanged.connect(self.updateCombo)
         #self.combolist.currentTextChanged.connect(self.updateCombo)
         self.combolist.currentTextChanged.connect(self.on_combobox_func)
+        
+    def SetHelpButton(self):
+        self.helpbtn = QPushButton("help",self)
+        self.helpbtn.move(750, 200)
+        self.helpbtn.clicked.connect(self.massage)
         
     def on_combobox_func(self, text):                                                    # +++
         self.current_text  = "DAQCommand reconfigure ../../config/" + text
@@ -202,11 +202,6 @@ class gui(QMainWindow):
         self.combolist.clear()
         self.combolist.addItems(self.onlyfile)
         
-    def SetHelpButton(self):
-        self.helpbtn = QPushButton("help",self)
-        self.helpbtn.move(650, 250)
-        self.helpbtn.clicked.connect(self.massage)
-        
     def SetStartButton(self):
         self.startbtn = QPushButton("start",self)
         self.startbtn.move(150,150)
@@ -215,32 +210,36 @@ class gui(QMainWindow):
         
     def SetStopButton(self):
         self.stopbtn = QPushButton("Stop",self)
-        self.stopbtn.move(250,150)
+        self.stopbtn.move(300,150)
         self.stopbtn.clicked.connect(self.longrun_stop)
-    
     
     
     def SetStatusButton(self):
         self.statusbtn = QPushButton("status",self)
-        self.statusbtn.move(350,150)
+        self.statusbtn.move(450,150)
         self.statusbtn.clicked.connect(self.longrun_status)
+        
+    def SetComboPrint(self):
+        self.comboprint = QComboBox(self)
+        self.comboprint.move(600,150)
+        self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
         
     def SetPrintButton(self):
         self.printbtn = QPushButton("print", self)
-        self.printbtn.move(550,150)
+        self.printbtn.move(750,150)
         self.printbtn.clicked.connect(self.longrun_print)
     
     def SetListButton(self):
         self.listbtn = QPushButton("list",self)
-        self.listbtn.move(250,250)
+        self.listbtn.move(250,200)
         self.listbtn.clicked.connect(self.clicked_list)
         
     def SetTextEdit(self):
         self.QTE = QTextEdit(self)
-        self.QTE.move(150,350)
+        self.QTE.move(150,250)
         self.QTE.resize(700,400)
-        with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        #with open('/var/log/MilliDAQ.log') as f :
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
@@ -255,15 +254,15 @@ class gui(QMainWindow):
     def refreshText(self):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
-        with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        #with open('/var/log/MilliDAQ.log') as f :
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
 
         if self.contents != self.content_temp:
             for i in self.contents[linenumber-1:-1]:
                 self.QTE.append(i)
                 QCoreApplication.processEvents()
-
+                
     def massage(self):
         self.msg = QMessageBox(self)
         #self.msg.setIcon(QMessageBox.Information)
@@ -271,7 +270,6 @@ class gui(QMainWindow):
         
         self.msg.setWindowTitle("This is the help window")
         self.retval = self.msg.exec_()
-
         
     def longrun_start(self):
         # Create a QThread object
@@ -292,7 +290,7 @@ class gui(QMainWindow):
         self.threadstart.finished.connect(
             lambda: self.startbtn.setEnabled(True)
         )
-        ''' 
+        '''
         self.threadstart.finished.connect(
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
@@ -379,10 +377,12 @@ class gui(QMainWindow):
         
         self.updateCombo()
 
+class tab2(QWidget):
+    def __init__(self):
+        super().__init__()
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = gui()
+    tabwidget = TabWidget()
+    tabwidget.show()
     sys.exit(app.exec_())
-    
-        
