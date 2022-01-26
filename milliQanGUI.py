@@ -240,8 +240,8 @@ class tab1(QWidget):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
-        #with open('/var/log/MilliDAQ.log') as f :
-        with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        with open('/var/log/MilliDAQ.log') as f :
+        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
@@ -256,8 +256,8 @@ class tab1(QWidget):
     def refreshText(self):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
-        #with open('/var/log/MilliDAQ.log') as f :
-        with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        with open('/var/log/MilliDAQ.log') as f :
+        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
 
         if self.contents != self.content_temp:
