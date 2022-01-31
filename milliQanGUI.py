@@ -395,6 +395,7 @@ class tab2(QWidget):
 		self.textvalue3 = ""
 		self.triggertype = "software"
 		self.triggerlogic = "logicOr"
+		self.filename = ""
 	
 		self.setCombolistDgtz()
 		self.setCombolistchannel()
@@ -409,6 +410,7 @@ class tab2(QWidget):
 		self.setlabel8()
 		self.setlabel9()
 		self.setlabel10()
+		self.setlabel11()
 		self.setcomboboxtype1()
 		self.setcomboboxtype2()
 		self.setcomboboxtype3()
@@ -416,6 +418,7 @@ class tab2(QWidget):
 		self.settextbox1()
 		self.settextbox2()
 		self.settextbox3()
+		self.settextbox4()
 		self.setsave()
 		self.setappend()
 	
@@ -492,7 +495,8 @@ class tab2(QWidget):
 		self.textbox1 = QLineEdit(self)
 		self.textbox1.move(310,300)
 		self.textbox1.resize(100,40)
-		self.textvalue1 = self.textbox1.text()
+		#self.textvalue1 = self.textbox1.text()
+		#print(self.textvalue1)
 	
 	
 	def setCombolistGroup(self):
@@ -521,7 +525,7 @@ class tab2(QWidget):
 		self.textbox2 = QLineEdit(self)
 		self.textbox2.move(300,400)
 		self.textbox2.resize(100,40)
-		self.textvalue2 = self.textbox2.text()
+		#self.textvalue2 = self.textbox2.text()
 	
 	def setlabel1(self):
 		self.label1 = QLabel(self)
@@ -545,7 +549,7 @@ class tab2(QWidget):
 	
 	def setcomboboxtype4(self):
 		self.comboboxtype4 = QComboBox(self)
-		self.comboboxtype4.move(200,600)
+		self.comboboxtype4.move(250,600)
 		self.comboboxtype4.addItems(["logicOr","logicAnd"])
 		self.comboboxtype4.currentTextChanged.connect(self.update7)
 	
@@ -562,16 +566,32 @@ class tab2(QWidget):
 		self.textbox3 = QLineEdit(self)
 		self.textbox3.move(250,700)
 		self.textbox3.resize(100,40)
-		self.textvalue3 = self.textbox3.text()
+		#self.textvalue3 = self.textbox3.text()
+	
+	def setlabel11(self):
+		self.label11 = QLabel(self)
+		self.label11.setText("file name")
+		self.label11.move(600,300)
+		
+	def settextbox4(self):
+		self.textbox4 = QLineEdit(self)
+		self.textbox4.move(600,350)
+		self.textbox4.resize(100,30)
+		#self.textvalue4 = self.textbox4.text()
 	
 	def setsave(self):
-		self.savebtn = QPushButton("save",self)
-		self.savebtn.move(500,400)
+		self.savebtn = QPushButton("Create",self)
+		self.savebtn.move(600,400)
 		self.savebtn.clicked.connect(self.save)
 		
 	def save(self):
+		self.textvalue1 = self.textbox1.text()
+		self.textvalue2 = self.textbox2.text()
+		self.textvalue3 = self.textbox3.text()
+		self.textvalue4 = self.textbox4.text() + ".py"
+		self.filename = os.path.join("../../config",self.textvalue4)
 		self.DGTZ = "cfg.Digitizers["
-		f = open("test_board.py","w+")
+		f = open(self.filename,"w+")
 		f.write("from Demonstrator import *\r\n")
 		f.write("cfg = Demonstrator()\r\n")
 		f.write("for dgtz in cfg.Digitizers:\r\n")
@@ -579,34 +599,56 @@ class tab2(QWidget):
 		f.write("        for iChannel, channel in enumerate(dgtz.channels):\r\n")
 		f.write("        channel.enable = True\r\n")
 		f.write("                channel.triggerEnable = False\r\n")
-		self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\r\n"
+		self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
 		f.write(self.text1)
-		self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\r\n"
+		self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
 		f.write(self.text2)
-		self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\r\n"
+		self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
 		f.write(self.text3)
-		self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\r\n"
+		self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
 		f.write(self.text4)
-		self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\r\n"
+		self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
+		f.write(self.text5)
+		self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
+		f.write(self.text6)
+		self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
+		f.write(self.text7)
+		
 		f.close()
 		
 	def setappend(self):
 		self.appendbtn = QPushButton("append",self)
-		self.appendbtn.move(500,500)
+		self.appendbtn.move(600,500)
 		self.appendbtn.clicked.connect(self.appendfile)
 		
 	def appendfile(self):
 		self.DGTZ = "cfg.Digitizers["
-		f = open("test_board.py","a")
-		self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\r\n"
-		f.write(self.text1)
-		self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\r\n"
-		f.write(self.text2)
-		self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\r\n"
-		f.write(self.text3)
-		self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\r\n"
-		f.write(self.text4)
-		self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\r\n"
+		f = open(self.filename,"r+")
+		text = f.read()
+
+		self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
+		if self.text1 not in text :
+			f.write(self.text1)
+		#else :
+			#print("ok")
+		self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
+		if self.text2 not in text :
+			f.write(self.text2)
+		self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
+		if self.text3 not in text :
+			f.write(self.text3)
+		self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
+		if self.text4 not in text :
+			f.write(self.text4)
+		self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
+		if self.text5 not in text :
+			f.write(self.text5)
+		self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
+		if self.text6 not in text :
+			f.write(self.text6)
+		self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
+		if self.text7 not in text :
+			f.write(self.text7)
 		f.close()
 
 		
