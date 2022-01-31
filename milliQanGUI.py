@@ -611,8 +611,8 @@ class tab2(QWidget):
 		self.DGTZ = "cfg.Digitizers["
 		go = True
 		if os.path.exists(self.filename) :
-			self.buttonReply = QMessageBox.question(self,"Message box","This file is already exist do you want to rewrite it",QMessageBox.Yes | QMessage.No,QMessage.Yes)
-			if self.buttonReply == QMessage.Yes :
+			self.buttonReply = QMessageBox.question(self,"Message box","This file is already exist do you want to rewrite it",QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
+			if self.buttonReply == QMessageBox.Yes :
 				go = True
 			else:
 				go = False
