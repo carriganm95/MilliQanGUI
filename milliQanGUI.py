@@ -3,8 +3,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-#from MilliDAQ.python.Demonstrator import *
-from Demonstrator import *
+from MilliDAQ.python.Demonstrator import *
+#from Demonstrator import *
 import sys
 import logging
 import subprocess
@@ -13,6 +13,7 @@ import signal
 import time
 import glob
 import select
+import os.path
 
 cfg = Demonstrator()
 
@@ -241,8 +242,8 @@ class tab1(QWidget):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
-        with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        #with open('/var/log/MilliDAQ.log') as f :
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
@@ -257,8 +258,8 @@ class tab1(QWidget):
     def refreshText(self):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
-        with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        #with open('/var/log/MilliDAQ.log') as f :
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
 
         if self.contents != self.content_temp:
@@ -436,7 +437,7 @@ class tab2(QWidget):
 	def setTextEdit(self):
 		self.QTE = QTextEdit(self)
 		self.QTE.move(500,100)
-		self.QTE.resize(300,500)
+		self.QTE.resize(400,500)
         
 	def setCombolistDgtz(self):
 		self.comboboxdgtz = QComboBox(self)
@@ -608,40 +609,48 @@ class tab2(QWidget):
 		self.textvalue4 = self.textbox4.text() + ".py"
 		self.filename = os.path.join("../../config",self.textvalue4)
 		self.DGTZ = "cfg.Digitizers["
-		f = open(self.filename,"w+")
-		f.write("from Demonstrator import *\n")
-		f.write("cfg = Demonstrator()\n")
-		f.write("for dgtz in cfg.Digitizers:\n")
-		f.write("        dgtz.IRQPolicy.use = False\n")
-		f.write("        for iChannel, channel in enumerate(dgtz.channels):\n")
-		f.write("        channel.enable = True\n")
-		f.write("                channel.triggerEnable = False\n")
-		self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
-		f.write(self.text1)
-		self.QTE.append(self.text1)
-		self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
-		f.write(self.text2)
-		self.QTE.append(self.text2)
-		self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
-		f.write(self.text3)
-		self.QTE.append(self.text3)
-		if textvalue1 != "" :
-			self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
-			f.write(self.text4)
-			self.QTE.append(self.text4)
-		self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
-		f.write(self.text5)
-		self.QTE.append(self.text5)
-		if textvalue2 != "" :
-			self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
-			f.write(self.text6)
-			self.QTE.append(self.text6)
-		if textvalue3 != "" :
-			self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
-			f.write(self.text7)
-			self.QTE.append(self.text7)
-		
-		f.close()
+		go = True
+		if os.path.exists(self.filename) :
+			self.buttonReply = QMessageBox.question(self,"Message box","This file is already exist do you want to rewrite it",QMessageBox.Yes | QMessage.No,QMessage.Yes)
+			if self.buttonReply == QMessage.Yes :
+				go = True
+			else:
+				go = False
+		if go == True :
+			f = open(self.filename,"w+")
+			f.write("from Demonstrator import *\n")
+			f.write("cfg = Demonstrator()\n")
+			f.write("for dgtz in cfg.Digitizers:\n")
+			f.write("        dgtz.IRQPolicy.use = False\n")
+			f.write("        for iChannel, channel in enumerate(dgtz.channels):\n")
+			f.write("        channel.enable = True\n")
+			f.write("                channel.triggerEnable = False\n")
+			self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
+			f.write(self.text1)
+			self.QTE.append(self.text1)
+			self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
+			f.write(self.text2)
+			self.QTE.append(self.text2)
+			self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
+			f.write(self.text3)
+			self.QTE.append(self.text3)
+			if textvalue1 != "" :
+				self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
+				f.write(self.text4)
+				self.QTE.append(self.text4)
+			self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
+			f.write(self.text5)
+			self.QTE.append(self.text5)
+			if textvalue2 != "" :
+				self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
+				f.write(self.text6)
+				self.QTE.append(self.text6)
+			if textvalue3 != "" :
+				self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
+				f.write(self.text7)
+				self.QTE.append(self.text7)
+			
+			f.close()
 		
 	def setappend(self):
 		self.appendbtn = QPushButton("append",self)
