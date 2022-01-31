@@ -634,18 +634,18 @@ class tab2(QWidget):
 			self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
 			f.write(self.text3)
 			self.QTE.append(self.text3)
-			if textvalue1 != "" :
+			if self.textvalue1 != "" :
 				self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
 				f.write(self.text4)
 				self.QTE.append(self.text4)
 			self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
 			f.write(self.text5)
 			self.QTE.append(self.text5)
-			if textvalue2 != "" :
+			if self.textvalue2 != "" :
 				self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
 				f.write(self.text6)
 				self.QTE.append(self.text6)
-			if textvalue3 != "" :
+			if self.textvalue3 != "" :
 				self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
 				f.write(self.text7)
 				self.QTE.append(self.text7)
@@ -676,7 +676,7 @@ class tab2(QWidget):
 		if self.text3 not in text :
 			f.write(self.text3)
 			self.QTE.append(self.text3)
-		if textvalue1 != "" :
+		if self.textvalue1 != "" :
 			self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
 			if self.text4 not in text :
 				f.write(self.text4)
@@ -685,12 +685,12 @@ class tab2(QWidget):
 		if self.text5 not in text :
 			f.write(self.text5)
 			self.QTE.append(self.text5)
-		if textvalue2 != "" :
+		if self.textvalue2 != "" :
 			self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
 			if self.text6 not in text :
 				f.write(self.text6)
 				self.QTE.append(self.text6)
-		if textvalue3 != "" :
+		if self.textvalue3 != "" :
 			self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
 			if self.text7 not in text :
 				f.write(self.text7)
