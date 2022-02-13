@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #from MilliDAQ.python.Demonstrator import *
+from tab3 import *
 from Demonstrator import *
 import sys
 import logging
@@ -14,6 +15,8 @@ import time
 import glob
 import select
 import os.path
+
+
 
 cfg = Demonstrator()
 
@@ -86,7 +89,8 @@ class TabWidget(QDialog):
         
         self.tabs  = QTabWidget()
         self.tabs.addTab(tab1(),"DAQCommand")
-        self.tabs.addTab(tab2(),"configure maker")
+        self.tabs.addTab(tab2(),"Configure Maker")
+        self.tabs.addTab(tab3(),"Tigger board")
         
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.tabs)
@@ -243,7 +247,7 @@ class tab1(QWidget):
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
         with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
+		#with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
@@ -425,10 +429,11 @@ class tab2(QWidget):
 		self.setsave()
 		self.setappend()
 		self.setTextEdit()
+		self.SetHelpButton()
 	
 	def setlabel(self):
 		self.label12 = QLabel(self)
-		self.label12.setText("Python configure maker")
+		self.label12.setText("Python Configure Maker")
         #self.label.setStyleSheet("border: 1px solid black;")
 		self.label12.setFont(QFont("Arial",30))
 		self.label12.move(300,20)
@@ -616,6 +621,7 @@ class tab2(QWidget):
 				go = True
 			else:
 				go = False
+				
 		if go == True :
 			f = open(self.filename,"w+")
 			f.write("from Demonstrator import *\n")
@@ -697,7 +703,18 @@ class tab2(QWidget):
 				self.QTE.append(self.text7)
 		f.close()
 
-		
+	def SetHelpButton(self):
+		self.helpbtn = QPushButton("help",self)
+		self.helpbtn.move(200, 100)
+		self.helpbtn.clicked.connect(self.massage)
+        
+	def massage(self):
+		self.msg = QMessageBox(self)
+        #self.msg.setIcon(QMessageBox.Information)
+		self.msg.setText("This tab is using for creating configure file for MiliQan detector.\nYou can create a new file with the name you want by click create.\nWhen you want to add other digitizer or channel or group just modify the information and click append.")
+        
+		self.msg.setWindowTitle("This is the help window")
+		self.retval = self.msg.exec_()
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	tabwidget = TabWidget()
