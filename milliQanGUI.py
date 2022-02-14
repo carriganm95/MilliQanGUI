@@ -159,7 +159,7 @@ class tab1(QWidget):
 
     def Setimage(self):
         self.label = QLabel(self)
-        self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
+        self.pixmap = QPixmap('Images/MilliQanLogo.png')
         self.label.setPixmap(self.pixmap.scaled(310,120))
         self.label.move(50,10)
         self.label.adjustSize()
