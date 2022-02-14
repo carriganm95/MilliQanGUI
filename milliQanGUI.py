@@ -88,9 +88,9 @@ class TabWidget(QDialog):
         self.initUI()
         
         self.tabs  = QTabWidget()
-        self.tabs.addTab(tab1(),"DAQCommand")
-        self.tabs.addTab(tab2(),"Configure Maker")
-        self.tabs.addTab(tab3(),"Tigger board")
+        self.tabs.addTab(daqcommand_tab(),"DAQCommand")
+        self.tabs.addTab(configure_tab(),"Configure Maker")
+        self.tabs.addTab(trigger_board_tab(),"Tigger board")
         
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.tabs)
@@ -133,7 +133,7 @@ class TabWidget(QDialog):
             QApplication.setStyle(QStyleFactory.create('Fusion'))
             QApplication.setPalette(darkPalette)
             
-class tab1(QWidget):
+class daqcommand_tab(QWidget):
     def __init__(self):
         super().__init__()
         self.contents = []
@@ -160,6 +160,7 @@ class tab1(QWidget):
     def Setimage(self):
         self.label = QLabel(self)
         self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
+		self.pixmap = QPixmap('../../MilliQanGUI/MicrosoftTeams-image.png')
         self.label.setPixmap(self.pixmap.scaled(310,120))
         self.label.move(50,10)
         self.label.adjustSize()
@@ -385,7 +386,7 @@ class tab1(QWidget):
         
         self.updateCombo()
 
-class tab2(QWidget):
+class configure_tab(QWidget):
 	def __init__(self):
 		super().__init__()
 		self.list1 = []
@@ -406,7 +407,7 @@ class tab2(QWidget):
 		self.setCombolistDgtz()
 		self.setCombolistchannel()
 		self.setCombolistGroup()
-		self.setlabel()
+		self.settitlelabel()
 		self.setlabel1()
 		self.setlabel2()
 		self.setlabel3()
@@ -431,7 +432,7 @@ class tab2(QWidget):
 		self.setTextEdit()
 		self.SetHelpButton()
 	
-	def setlabel(self):
+	def settitlelabel(self):
 		self.label12 = QLabel(self)
 		self.label12.setText("Python Configure Maker")
         #self.label.setStyleSheet("border: 1px solid black;")
