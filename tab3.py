@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from triggerBoard.py import *
+from triggerBoard import *
 import sys
 import logging
 import subprocess
