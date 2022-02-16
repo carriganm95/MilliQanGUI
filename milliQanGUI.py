@@ -3,9 +3,9 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-#from MilliDAQ.python.Demonstrator import *
+from MilliDAQ.python.Demonstrator import *
 from tab3 import *
-from Demonstrator import *
+#from Demonstrator import *
 import sys
 import logging
 import subprocess
@@ -132,7 +132,8 @@ class TabWidget(QDialog):
         #self.setStyleSheet("background-color: Dark grey;")
             QApplication.setStyle(QStyleFactory.create('Fusion'))
             QApplication.setPalette(darkPalette)
-            
+       
+#the mean tab for Runing DAQcommand
 class daqcommand_tab(QWidget):
     def __init__(self):
         super().__init__()
@@ -157,10 +158,11 @@ class daqcommand_tab(QWidget):
         
         self.show()
 
+#set the logo of Milliqan
     def Setimage(self):
         self.label = QLabel(self)
         self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
-		self.pixmap = QPixmap('../../MilliQanGUI/MicrosoftTeams-image.png')
+		#self.pixmap = QPixmap('Images/MilliQanLogo.png')
         self.label.setPixmap(self.pixmap.scaled(310,120))
         self.label.move(50,10)
         self.label.adjustSize()
@@ -247,8 +249,8 @@ class daqcommand_tab(QWidget):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
-        with open('/var/log/MilliDAQ.log') as f :
-		#with open('/Users/mr-right/physics/research2/textexample.log') as f :
+		#with open('/var/log/MilliDAQ.log') as f :
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
@@ -263,8 +265,8 @@ class daqcommand_tab(QWidget):
     def refreshText(self):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
-        with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
+        #with open('/var/log/MilliDAQ.log') as f :
+        with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
 
         if self.contents != self.content_temp:
@@ -389,9 +391,9 @@ class daqcommand_tab(QWidget):
 class configure_tab(QWidget):
 	def __init__(self):
 		super().__init__()
-		self.list1 = []
-		self.list2 = []
-		self.list3 = []
+		self.list_dgtz = []
+		self.list_channel = []
+		self.list_group = []
 		self.Dgtz = "0"
 		self.Channel = "0"
 		self.Group = "0"
@@ -407,32 +409,22 @@ class configure_tab(QWidget):
 		self.setCombolistDgtz()
 		self.setCombolistchannel()
 		self.setCombolistGroup()
-		self.settitlelabel()
-		self.setlabel1()
-		self.setlabel2()
-		self.setlabel3()
-		self.setlabel4()
-		self.setlabel5()
-		self.setlabel6()
-		self.setlabel7()
-		self.setlabel8()
-		self.setlabel9()
-		self.setlabel10()
-		self.setlabel11()
-		self.setcomboboxtype1()
-		self.setcomboboxtype2()
-		self.setcomboboxtype3()
-		self.setcomboboxtype4()
-		self.settextbox1()
-		self.settextbox2()
-		self.settextbox3()
-		self.settextbox4()
-		self.setsave()
-		self.setappend()
+		self.setTriggerEnableBtn()
+		self.setTriggerPolarityBtn()
+		self.setTriggerThresholdBtn()
+		self.setTriggerDelayBtn()
+		self.setTriggerTypeBtn()
+		self.setGroupTriggerLogicBtn()
+		self.setMaxNumEventsBtn()
+		self.setfilename()
+		self.setTitleLabel()
+
+		self.setSavebtn()
+		self.setAppendbtn()
 		self.setTextEdit()
 		self.SetHelpButton()
 	
-	def settitlelabel(self):
+	def setTitleLabel(self):
 		self.label12 = QLabel(self)
 		self.label12.setText("Python Configure Maker")
         #self.label.setStyleSheet("border: 1px solid black;")
@@ -449,16 +441,15 @@ class configure_tab(QWidget):
 		self.comboboxdgtz = QComboBox(self)
 		self.comboboxdgtz.move(100,150)
 		for dgtz in range(len(cfg.Digitizers)):
-			self.list1.append(str(dgtz))
-		self.comboboxdgtz.addItems(self.list1)
-		self.comboboxdgtz.currentTextChanged.connect(self.update1)
+			self.list_dgtz.append(str(dgtz))
+		self.comboboxdgtz.addItems(self.list_dgtz)
+		self.comboboxdgtz.currentTextChanged.connect(self.update_dgtz)
 		
-	def setlabel8(self):
 		self.label8 = QLabel(self)
 		self.label8.setText("Digitizers")
 		self.label8.move(100,100)
 		
-	def update1(self,value):
+	def update_dgtz(self,value):
 		#global self.Dgtz
 		self.Dgtz = value
 	
@@ -466,55 +457,51 @@ class configure_tab(QWidget):
 		self.comboboxchannel = QComboBox(self)
 		self.comboboxchannel.move(100,250)
 		for channel in range(16):
-			self.list2.append(str(channel))
-		self.comboboxchannel.addItems(self.list2)
-		self.comboboxchannel.currentTextChanged.connect(self.update2)
+			self.list_channel.append(str(channel))
+		self.comboboxchannel.addItems(self.list_channel)
+		self.comboboxchannel.currentTextChanged.connect(self.update_channel)
 		
-	def setlabel9(self):
 		self.label9 = QLabel(self)
 		self.label9.setText("Channel")
 		self.label9.move(100,200)
 		
-	def update2(self,value):
+	def update_channel(self,value):
 		#global self.Channel
 		self.Channel = value
 	
-	def setlabel3(self):
+	def setTriggerEnableBtn(self):
 		self.label3 = QLabel(self)
 		self.label3.setText("triggerEnable")
 		self.label3.move(200,250)
 	
-	def setcomboboxtype1(self):
 		self.comboboxtype = QComboBox(self)
 		self.comboboxtype.move(310,250)
 		self.comboboxtype.addItems(["True","False"])
-		self.comboboxtype.currentTextChanged.connect(self.update4)
+		self.comboboxtype.currentTextChanged.connect(self.update_triggerenable)
 	
-	def update4(self,value):
+	def update_triggerenable(self,value):
 		#global self.enabletype
 		self.enabletype = value
 	
-	def setlabel4(self):
+	def setTriggerPolarityBtn(self):
 		self.label4 = QLabel(self)
 		self.label4.setText("triggerPolarity")
 		self.label4.move(200,300)
 	
-	def setcomboboxtype2(self):
 		self.comboboxtype2 = QComboBox(self)
 		self.comboboxtype2.move(310,300)
 		self.comboboxtype2.addItems(["risingEdge","fallingEdge"])
-		self.comboboxtype2.currentTextChanged.connect(self.update5)
+		self.comboboxtype2.currentTextChanged.connect(self.update_triggerpolarity)
 	
-	def update5(self,value):
+	def update_triggerpolarity(self,value):
 		#global self.polaritytype
 		self.polaritytype = "Channel." + value
 	
-	def setlabel5(self):
+	def setTriggerThresholdBtn(self):
 		self.label4 = QLabel(self)
 		self.label4.setText("triggerThreshold")
 		self.label4.move(200,350)
-	
-	def settextbox1(self):
+
 		self.textbox1 = QLineEdit(self)
 		self.textbox1.move(310,350)
 		self.textbox1.resize(100,30)
@@ -526,84 +513,78 @@ class configure_tab(QWidget):
 		self.comboboxgroup = QComboBox(self)
 		self.comboboxgroup.move(100,450)
 		for group in range(8):
-			self.list3.append(str(group))
-		self.comboboxgroup.addItems(self.list3)
-		self.comboboxgroup.currentTextChanged.connect(self.update3)
-	
-	def setlabel10(self):
+			self.list_group.append(str(group))
+		self.comboboxgroup.addItems(self.list_group)
+		self.comboboxgroup.currentTextChanged.connect(self.update_group)
+
 		self.label10 = QLabel(self)
 		self.label10.setText("Group")
 		self.label10.move(100,400)
 		
-	def update3(self,value):
+	def update_group(self,value):
 		#global self.Group
 		self.Group = value
 	
-	def setlabel6(self):
+	def setTriggerDelayBtn(self):
 		self.label6 = QLabel(self)
 		self.label6.setText("TriggerDelay")
 		self.label6.move(200,450)
-	
-	def settextbox2(self):
+
 		self.textbox2 = QLineEdit(self)
 		self.textbox2.move(300,450)
 		self.textbox2.resize(100,30)
 		#self.textvalue2 = self.textbox2.text()
 	
-	def setlabel1(self):
+	def setTriggerTypeBtn(self):
 		self.label1 = QLabel(self)
 		self.label1.setText("TriggerType")
 		self.label1.move(100,550)
-	
-	def setcomboboxtype3(self):
+
 		self.comboboxtype3 = QComboBox(self)
 		self.comboboxtype3.move(200,550)
 		self.comboboxtype3.addItems(["software","normal","auto","external","externalAndNormal","externalOrNormal","none"])
-		self.comboboxtype3.currentTextChanged.connect(self.update6)
+		self.comboboxtype3.currentTextChanged.connect(self.update_triggertype)
 	
-	def update6(self,value):
+	def update_triggertype(self,value):
 		#global self.triggertype
 		self.triggertype = "TriggerType." + value
 	
-	def setlabel2(self):
+	def setGroupTriggerLogicBtn(self):
 		self.label2 = QLabel(self)
 		self.label2.setText("GroupTriggerLogic")
 		self.label2.move(100,650)
 	
-	def setcomboboxtype4(self):
 		self.comboboxtype4 = QComboBox(self)
 		self.comboboxtype4.move(250,650)
 		self.comboboxtype4.addItems(["logicOr","logicAnd"])
-		self.comboboxtype4.currentTextChanged.connect(self.update7)
+		self.comboboxtype4.currentTextChanged.connect(self.update_grouptriggerlogic)
 	
-	def update7(self,value):
+	def update_grouptriggerlogic(self,value):
 		#global self.triggerlogic
 		self.triggerlogic = value
 	
-	def setlabel7(self):
+	def setMaxNumEventsBtn(self):
 		self.label7 = QLabel(self)
 		self.label7.setText("MaxNumEventsBLT")
 		self.label7.move(100,700)
 	
-	def settextbox3(self):
 		self.textbox3 = QLineEdit(self)
 		self.textbox3.move(250,700)
 		self.textbox3.resize(100,30)
 		#self.textvalue3 = self.textbox3.text()
 	
-	def setlabel11(self):
+	def setfilename(self):
 		self.label11 = QLabel(self)
 		self.label11.setText("Please type the file name you want below")
 		self.label11.setFont(QFont('Arial',15))
 		self.label11.move(500,610)
 		
-	def settextbox4(self):
 		self.textbox4 = QLineEdit(self)
 		self.textbox4.move(500,650)
 		self.textbox4.resize(150,30)
 		#self.textvalue4 = self.textbox4.text()
 	
-	def setsave(self):
+	def setSavebtn(self):
 		self.savebtn = QPushButton("Create",self)
 		self.savebtn.move(500,700)
 		self.savebtn.clicked.connect(self.save)
@@ -659,7 +640,7 @@ class configure_tab(QWidget):
 			
 			f.close()
 		
-	def setappend(self):
+	def setAppendbtn(self):
 		self.appendbtn = QPushButton("append",self)
 		self.appendbtn.move(600,700)
 		self.appendbtn.clicked.connect(self.appendfile)
