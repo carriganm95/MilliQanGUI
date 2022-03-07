@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #from MilliDAQ.python.Demonstrator import *
-from tab3 import *
+from tab3_new import *
 from Demonstrator import *
 import sys
 import logging
@@ -22,64 +22,70 @@ cfg = Demonstrator()
 
 logging.basicConfig(format = "%(message)s",level = logging.INFO)
 
-
+#class for long runing function which need to be killed
 class worker(QObject):
     def __init__(self):
         super().__init__()
         
+        #set a variable for file
         self.p = None
 
 
     finished = pyqtSignal()
-
+	
+	#Run DAQcommand start on terminal
     def clicked_start(self):
-        p = subprocess.Popen("DAQCommand start", shell=True)
-        time.sleep(5)
+        p = subprocess.Popen("DAQCommand start", shell=True) #Run this command in terminal
+        time.sleep(5)		#The time counter sleep for 0.5 second
         pid = p.pid
-        tail_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell=True, stdout=subprocess.PIPE).communicate()[0]
+        tail_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell=True, stdout=subprocess.PIPE).communicate()[0] #find the tail we open
         tail_pid = int(tail_pid)
-        os.kill(tail_pid, signal.SIGINT)
-        p.terminate()
+        os.kill(tail_pid, signal.SIGINT) #kill the tail we don't want
+        p.terminate() #kill the variable we use
         self.finished.emit()
 
-    
+    #Run DAQCommand status on terminal
     def clicked_status(self):
-        p1 = subprocess.Popen("DAQCommand status", shell= True)
-        time.sleep(5)
+        p1 = subprocess.Popen("DAQCommand status", shell= True) #Run this command in terminal
+        time.sleep(5)			#The time counter sleep for 0.5 second
         pid1 = p1.pid
-        tail1_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail1_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0] #find the tail we open
         tail1_pid = int(tail1_pid)
-        os.kill(tail1_pid,signal.SIGINT)
-        p1.terminate()
+        os.kill(tail1_pid,signal.SIGINT) #kill the tail
+        p1.terminate() #kill the variable we use
         self.finished.emit()
-                
+            
+	#Run DAQCommand stop on terminal
     def clicked_stop(self):
-        p2 = subprocess.Popen("DAQCommand stop", shell= True)
-        time.sleep(5)
+        p2 = subprocess.Popen("DAQCommand stop", shell= True) #Run this command in terminal
+        time.sleep(5) 				#The time counter sleep for 0.5 second
         pid2 = p2.pid
-        tail2_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail2_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0] #find the tail we open
         tail2_pid = int(tail2_pid)
-        os.kill(tail2_pid,signal.SIGINT)
-        p2.terminate()
+        os.kill(tail2_pid,signal.SIGINT)	#kill the tail
+        p2.terminate()		#kill the variable we use
 
         self.finished.emit()
         
+	#Run DAQCommand print on terminal
     def clicked_print(self):
-        p3 = subprocess.Popen("DAQCommand print", shell= True)
-        time.sleep(5)
+        p3 = subprocess.Popen("DAQCommand print", shell= True)  #Run this command in terminal
+        time.sleep(5)			#The time counter sleep for 0.5 second
         pid3 = p3.pid
-        tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]	#find the tail we open
         tail3_pid = int(tail3_pid)
-        os.kill(tail3_pid,signal.SIGINT)
-        p3.terminate()
+        os.kill(tail3_pid,signal.SIGINT) 	#kill the tail
+        p3.terminate()		#kill the variable we use
 
         self.finished.emit()
         
+#main function for the QUI
 class TabWidget(QDialog):
   
     def __init__(self):
         super().__init__()
-   
+		
+		#define the main windows for GUI
         self.title = 'DAQCommand GUI'
         self.left = 10
         self.top = 10
@@ -87,6 +93,7 @@ class TabWidget(QDialog):
         self.height = 800
         self.initUI()
         
+        #add tabs to the GUI
         self.tabs  = QTabWidget()
         self.tabs.addTab(daqcommand_tab(),"DAQCommand")
         self.tabs.addTab(configure_tab(),"Configure Maker")
@@ -97,9 +104,11 @@ class TabWidget(QDialog):
         self.setLayout(self.layout)
         
         #self.show()
+	#set up the general look of the QUI
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        #set the windows to black style
         if False and sys.platform.startswith("darwin"):
             QApplication.setStyle(QStyleFactory.create('macintosh'))
             QApplication.setPalette(QApplication.style().standardPalette())
@@ -140,7 +149,8 @@ class daqcommand_tab(QWidget):
         self.contents = []
         self.content_temp = []
         self.onlyfile = []
-
+		
+		#set up every button, textbox and list on GUI
         self.SetStartButton()
         self.SetStartButton()
         self.SetStopButton()
@@ -161,8 +171,8 @@ class daqcommand_tab(QWidget):
 #set the logo of Milliqan
     def Setimage(self):
         self.label = QLabel(self)
-        self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
-		#self.pixmap = QPixmap('Images/MilliQanLogo.png')
+        #self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
+		self.pixmap = QPixmap('Images/MilliQanLogo.png')
         self.label.setPixmap(self.pixmap.scaled(310,120))
         self.label.move(50,10)
         self.label.adjustSize()
@@ -190,7 +200,8 @@ class daqcommand_tab(QWidget):
         #self.combolist.currentTextChanged.connect(self.updateCombo)
         #self.combolist.currentTextChanged.connect(self.updateCombo)
         self.combolist.currentTextChanged.connect(self.on_combobox_func)
-        
+	
+	#Give user help about this GUI
     def SetHelpButton(self):
         self.helpbtn = QPushButton("help",self)
         self.helpbtn.move(750, 200)
@@ -198,7 +209,8 @@ class daqcommand_tab(QWidget):
         
     def on_combobox_func(self, text):                                                    # +++
         self.current_text  = "DAQCommand reconfigure ../../config/" + text
-        
+      
+	#update the terminal information to textbox
     def on_clicled(self):                                                                # +++
         #subprocess.Popen(self.current_text, shell= True)
         p3 = subprocess.Popen(self.current_text, shell= True)
@@ -209,42 +221,48 @@ class daqcommand_tab(QWidget):
         os.kill(tail3_pid,signal.SIGINT)
         p3.terminate()
     
+    #list the file can configure
     def updateCombo(self):
         self.combolist.clear()
         self.combolist.addItems(self.onlyfile)
         
+	#DAQcommand Start
     def SetStartButton(self):
         self.startbtn = QPushButton("start",self)
         self.startbtn.move(150,150)
         self.startbtn.clicked.connect(self.longrun_start)
         
-        
+	#DAQcommand stop
     def SetStopButton(self):
         self.stopbtn = QPushButton("Stop",self)
         self.stopbtn.move(300,150)
         self.stopbtn.clicked.connect(self.longrun_stop)
     
-    
+    #DAQcommand status
     def SetStatusButton(self):
         self.statusbtn = QPushButton("status",self)
         self.statusbtn.move(450,150)
         self.statusbtn.clicked.connect(self.longrun_status)
         
+	#DAQcommand print different information
     def SetComboPrint(self):
         self.comboprint = QComboBox(self)
         self.comboprint.move(600,150)
         self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
         
+	#DAQcommand Print
     def SetPrintButton(self):
         self.printbtn = QPushButton("print", self)
         self.printbtn.move(750,150)
         self.printbtn.clicked.connect(self.longrun_print)
     
+    #List all file we can use for reconfigure
     def SetListButton(self):
         self.listbtn = QPushButton("list",self)
         self.listbtn.move(250,200)
         self.listbtn.clicked.connect(self.clicked_list)
         
+	#Auto update textbox which will print the information show in terminal
     def SetTextEdit(self):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
@@ -255,13 +273,14 @@ class daqcommand_tab(QWidget):
         #self.QTE.setObjectName("status information")
         #self.QTE.setPlainText(self.contents)
     
-        
+	#Auto timer which will count time
     def SetqTimer(self):
         self.qtimer = QTimer()
         self.qtimer.setInterval(1000)
         self.qtimer.timeout.connect(self.refreshText)
         self.qtimer.start()
         
+	#refresh text in the textbox
     def refreshText(self):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
@@ -274,6 +293,7 @@ class daqcommand_tab(QWidget):
                 self.QTE.append(i)
                 QCoreApplication.processEvents()
                 
+    #help windom massage
     def massage(self):
         self.msg = QMessageBox(self)
         #self.msg.setIcon(QMessageBox.Information)
@@ -282,6 +302,7 @@ class daqcommand_tab(QWidget):
         self.msg.setWindowTitle("This is the help window")
         self.retval = self.msg.exec_()
         
+	#long run start which can start a new thread to start a new run
     def longrun_start(self):
         # Create a QThread object
         self.threadstart = QThread()
@@ -306,6 +327,7 @@ class daqcommand_tab(QWidget):
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
         '''
+	#long run stop which can start a new thread to start a new run
     def longrun_stop(self):
         # Create a QThread object
         self.threadstop = QThread()
@@ -331,6 +353,7 @@ class daqcommand_tab(QWidget):
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
         '''
+	#long run status which can start a new thread to start a new run
     def longrun_status(self):
         # Create a QThread object
         self.threadstatus = QThread()
@@ -356,7 +379,7 @@ class daqcommand_tab(QWidget):
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
         '''
-    
+	#long run print which can kill the trail we donn't want when we use the DAQcommand
     def longrun_print(self):
     # Create a QThread object
         self.threadprint = QThread()
@@ -377,7 +400,7 @@ class daqcommand_tab(QWidget):
         self.threadprint.finished.connect(
             lambda: self.printbtn.setEnabled(True)
         )
-    
+    #function can list the file inside config 
     def clicked_list(self):
         self.onlyfile =[]
         for filename in glob.glob("../../config/*.py"):
@@ -391,21 +414,23 @@ class daqcommand_tab(QWidget):
 class configure_tab(QWidget):
 	def __init__(self):
 		super().__init__()
-		self.list_dgtz = []
-		self.list_channel = []
-		self.list_group = []
-		self.Dgtz = "0"
-		self.Channel = "0"
-		self.Group = "0"
-		self.enabletype = "True"
-		self.polaritytype = "risingEdge"
-		self.textvalue1 = ""
-		self.textvalue2 = ""
-		self.textvalue3 = ""
-		self.triggertype = "software"
-		self.triggerlogic = "logicOr"
-		self.filename = ""
+		#set up different variable we will use in configure tab
+		self.list_dgtz = [] 	#list for digitizer number
+		self.list_channel = []	#list for Channel number
+		self.list_group = []	#list for group number
+		self.Dgtz = "0"			#Current digitizer
+		self.Channel = "0"		#Current channel
+		self.Group = "0"		#Current Group
+		self.enabletype = "True"			#Current enabletype
+		self.polaritytype = "risingEdge"	#Current polaritytyoe
+		self.textvalue1 = ""				#Current value in textbox1
+		self.textvalue2 = ""				#Current value in textbox2
+		self.textvalue3 = ""				#Current value in textbox3
+		self.triggertype = "software"		#Current triggerType
+		self.triggerlogic = "logicOr"		#Current triggerlogic
+		self.filename = ""					#Current file name
 	
+		#set up all the buttons and textbox on tab
 		self.setCombolistDgtz()
 		self.setCombolistchannel()
 		self.setCombolistGroup()
@@ -424,6 +449,7 @@ class configure_tab(QWidget):
 		self.setTextEdit()
 		self.SetHelpButton()
 	
+	#set title for this tab
 	def setTitleLabel(self):
 		self.label12 = QLabel(self)
 		self.label12.setText("Python Configure Maker")
@@ -431,12 +457,14 @@ class configure_tab(QWidget):
 		self.label12.setFont(QFont("Arial",30))
 		self.label12.move(300,20)
 		#self.label12.resize(150,50)
-        
+	
+	#Set textbox for information we create in file
 	def setTextEdit(self):
 		self.QTE = QTextEdit(self)
 		self.QTE.move(500,100)
 		self.QTE.resize(400,500)
         
+	#List for digitizers
 	def setCombolistDgtz(self):
 		self.comboboxdgtz = QComboBox(self)
 		self.comboboxdgtz.move(100,150)
@@ -448,11 +476,13 @@ class configure_tab(QWidget):
 		self.label8 = QLabel(self)
 		self.label8.setText("Digitizers")
 		self.label8.move(100,100)
-		
+	
+	#Function to update digitizer number
 	def update_dgtz(self,value):
 		#global self.Dgtz
 		self.Dgtz = value
-	
+		
+	#List for Channel
 	def setCombolistchannel(self):
 		self.comboboxchannel = QComboBox(self)
 		self.comboboxchannel.move(100,250)
@@ -465,10 +495,12 @@ class configure_tab(QWidget):
 		self.label9.setText("Channel")
 		self.label9.move(100,200)
 		
+	#Function to update channel number
 	def update_channel(self,value):
 		#global self.Channel
 		self.Channel = value
 	
+	#Choose triigerenable
 	def setTriggerEnableBtn(self):
 		self.label3 = QLabel(self)
 		self.label3.setText("triggerEnable")
@@ -479,10 +511,12 @@ class configure_tab(QWidget):
 		self.comboboxtype.addItems(["True","False"])
 		self.comboboxtype.currentTextChanged.connect(self.update_triggerenable)
 	
+	#function to update enable type
 	def update_triggerenable(self,value):
 		#global self.enabletype
 		self.enabletype = value
 	
+	#choose trigger polarity type
 	def setTriggerPolarityBtn(self):
 		self.label4 = QLabel(self)
 		self.label4.setText("triggerPolarity")
@@ -493,10 +527,12 @@ class configure_tab(QWidget):
 		self.comboboxtype2.addItems(["risingEdge","fallingEdge"])
 		self.comboboxtype2.currentTextChanged.connect(self.update_triggerpolarity)
 	
+	#function to update polarity type
 	def update_triggerpolarity(self,value):
 		#global self.polaritytype
 		self.polaritytype = "Channel." + value
 	
+	#Choose trigger Threshold
 	def setTriggerThresholdBtn(self):
 		self.label4 = QLabel(self)
 		self.label4.setText("triggerThreshold")
@@ -508,7 +544,7 @@ class configure_tab(QWidget):
 		#self.textvalue1 = self.textbox1.text()
 		#print(self.textvalue1)
 	
-	
+	#Choose Group
 	def setCombolistGroup(self):
 		self.comboboxgroup = QComboBox(self)
 		self.comboboxgroup.move(100,450)
@@ -521,10 +557,12 @@ class configure_tab(QWidget):
 		self.label10.setText("Group")
 		self.label10.move(100,400)
 		
+	#update group number
 	def update_group(self,value):
 		#global self.Group
 		self.Group = value
 	
+	#Choose Trigger delay
 	def setTriggerDelayBtn(self):
 		self.label6 = QLabel(self)
 		self.label6.setText("TriggerDelay")
@@ -535,6 +573,7 @@ class configure_tab(QWidget):
 		self.textbox2.resize(100,30)
 		#self.textvalue2 = self.textbox2.text()
 	
+	#Choose trigger type
 	def setTriggerTypeBtn(self):
 		self.label1 = QLabel(self)
 		self.label1.setText("TriggerType")
@@ -545,10 +584,12 @@ class configure_tab(QWidget):
 		self.comboboxtype3.addItems(["software","normal","auto","external","externalAndNormal","externalOrNormal","none"])
 		self.comboboxtype3.currentTextChanged.connect(self.update_triggertype)
 	
+	#update triggertype
 	def update_triggertype(self,value):
 		#global self.triggertype
 		self.triggertype = "TriggerType." + value
 	
+	#Choose Group trigger Logic
 	def setGroupTriggerLogicBtn(self):
 		self.label2 = QLabel(self)
 		self.label2.setText("GroupTriggerLogic")
@@ -559,10 +600,12 @@ class configure_tab(QWidget):
 		self.comboboxtype4.addItems(["logicOr","logicAnd"])
 		self.comboboxtype4.currentTextChanged.connect(self.update_grouptriggerlogic)
 	
+	#update group trigger logic
 	def update_grouptriggerlogic(self,value):
 		#global self.triggerlogic
 		self.triggerlogic = value
 	
+	#Choose max number events
 	def setMaxNumEventsBtn(self):
 		self.label7 = QLabel(self)
 		self.label7.setText("MaxNumEventsBLT")
@@ -573,6 +616,7 @@ class configure_tab(QWidget):
 		self.textbox3.resize(100,30)
 		#self.textvalue3 = self.textbox3.text()
 	
+	#set up file name btn
 	def setfilename(self):
 		self.label11 = QLabel(self)
 		self.label11.setText("Please type the file name you want below")
@@ -584,12 +628,15 @@ class configure_tab(QWidget):
 		self.textbox4.resize(150,30)
 		#self.textvalue4 = self.textbox4.text()
 	
+	#set up save file btn
 	def setSavebtn(self):
 		self.savebtn = QPushButton("Create",self)
 		self.savebtn.move(500,700)
 		self.savebtn.clicked.connect(self.save)
 		
+	#Use the information user want to create a new file
 	def save(self):
+		#update value to template value
 		self.textvalue1 = self.textbox1.text()
 		self.textvalue2 = self.textbox2.text()
 		self.textvalue3 = self.textbox3.text()
@@ -597,6 +644,7 @@ class configure_tab(QWidget):
 		self.filename = os.path.join("../../config",self.textvalue4)
 		self.DGTZ = "cfg.Digitizers["
 		go = True
+		#Check the file if it is already exist
 		if os.path.exists(self.filename) :
 			self.buttonReply = QMessageBox.question(self,"Message box","This file is already exist do you want to rewrite it",QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
 			if self.buttonReply == QMessageBox.Yes :
@@ -604,6 +652,7 @@ class configure_tab(QWidget):
 			else:
 				go = False
 				
+		#print imformation into the new file
 		if go == True :
 			f = open(self.filename,"w+")
 			f.write("from Demonstrator import *\n")
@@ -640,11 +689,13 @@ class configure_tab(QWidget):
 			
 			f.close()
 		
+	#set up append btn
 	def setAppendbtn(self):
 		self.appendbtn = QPushButton("append",self)
 		self.appendbtn.move(600,700)
 		self.appendbtn.clicked.connect(self.appendfile)
-		
+	
+	#Append more information to the file user just create
 	def appendfile(self):
 		self.DGTZ = "cfg.Digitizers["
 		f = open(self.filename,"r+")
@@ -684,12 +735,14 @@ class configure_tab(QWidget):
 				f.write(self.text7)
 				self.QTE.append(self.text7)
 		f.close()
-
+	
+	#set up help btn
 	def SetHelpButton(self):
 		self.helpbtn = QPushButton("help",self)
 		self.helpbtn.move(200, 100)
 		self.helpbtn.clicked.connect(self.massage)
         
+	#help massage to remind user how to use this gui
 	def massage(self):
 		self.msg = QMessageBox(self)
         #self.msg.setIcon(QMessageBox.Information)
@@ -697,6 +750,8 @@ class configure_tab(QWidget):
         
 		self.msg.setWindowTitle("This is the help window")
 		self.retval = self.msg.exec_()
+		
+#main function to run the GUI
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	tabwidget = TabWidget()
