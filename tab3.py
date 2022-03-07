@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from triggerBoard.py import *
+#from triggerBoard.py import *
 import sys
 import logging
 import subprocess
@@ -13,6 +13,9 @@ import glob
 import select
 import os.path
 
+def runClass(num):
+	x= num
+	
 class trigger_board_tab(QWidget):
 	def __init__(self):
 		super().__init__()
@@ -49,81 +52,94 @@ class trigger_board_tab(QWidget):
 	#output firmware version
 	def setFirmwareBtn(self):
 		self.label1 = QLabel(self)
-		self.label1.setText("Firmware version")
+		self.label1.setText("Firmware Version")
+		self.myFont = QFont()
+		self.myFont.setBold(True)
+		self.label1.setFont(self.myFont)
 		self.label1.move(50,100)
 		
 		self.btn = QPushButton("update",self)
-		self.btn.move(50,150)
+		self.btn.resize(100,100)
+		self.btn.move(65,150)
 		self.btn.clicked.connect(self.firmware)
 	#output coincidence time
 	def setCoincidenceTimeBtn(self):
 		self.label2 = QLabel(self)
-		self.label2.setText("coincidence time\nimport time below")
+		self.label2.setText("Coincidence Time")
+		self.label2.setFont(self.myFont)
 		self.label2.move(200,100)
 		
 		self.textbox1 = QLineEdit(self)
+		self.textbox1.setPlaceholderText("Inport time here")
 		self.textbox1.move(200,150)
-		self.textbox1.resize(100,25)
+		self.textbox1.resize(120,25)
 		
 		self.btn2 = QPushButton("update",self)
-		self.btn2.move(200,200)
+		self.btn2.move(215,200)
 		self.btn2.clicked.connect(self.coincidence)
 	#output histogram to send
 	def setHistogramBtn(self):
 		self.label3 = QLabel(self)
-		self.label3.setText("Histogram to send\nimport histogram\nnumber below")
+		self.label3.setText("Histogram to send")
+		self.label3.setFont(self.myFont)
 		self.label3.move(350,100)
 		
 		self.textbox2 = QLineEdit(self)
-		self.textbox2.move(350,170)
-		self.textbox2.resize(100,25)
+		self.textbox2.setPlaceholderText("Import histogram number")
+		self.textbox2.move(350,150)
+		self.textbox2.resize(120,25)
 		
 		self.btn3 = QPushButton("update",self)
-		self.btn3.move(350,200)
+		self.btn3.move(365,200)
 		self.btn3.clicked.connect(self.histogram)
 		
 	#output Toggle Output Enable
 	def setToggleOutputBtn(self):
 		self.label4 = QLabel(self)
 		self.label4.setText("Toggle Output Enable")
+		self.label4.setFont(self.myFont)
 		self.label4.move(500,100)
 		
 		self.btn4 = QPushButton("update",self)
-		self.btn4.move(500,150)
+		self.btn4.move(515,150)
 		self.btn4.clicked.connect(self.Toggle_output_enable)
 		
 	#output Toggle Clock input
 	def setToggleClockInputBtn(self):
 		self.label5 = QLabel(self)
 		self.label5.setText("Toggle clock inputs")
+		self.label5.setFont(self.myFont)
 		self.label5.move(650,100)
 		
 		self.btn5 = QPushButton("update",self)
-		self.btn5.move(650,150)
+		self.btn5.move(665,150)
 		self.btn5.clicked.connect(self.Toggle_clock_inputs)
 		
 	#output adjust clock phase
 	def setAdjustClockPhaseBtn(self):
 		self.label6 = QLabel(self)
 		self.label6.setText("Adjust Clock Phase")
+		self.label6.setFont(self.myFont)
 		self.label6.move(800,100)
 		
 		self.btn6 = QPushButton("update",self)
-		self.btn6.move(800,150)
+		self.btn6.move(815,150)
 		self.btn6.clicked.connect(self.adjust_clock_phase)
 		
 	#output set Random seed
 	def setRandomSeedBtn(self):
 		self.label7 = QLabel(self)
-		self.label7.setText("Set Random Seed\nimport seed\nnumber below")
+		self.label7.setText("Set Random Seed")
+		self.label7.setFont(self.myFont)
 		self.label7.move(50,300)
 		
 		self.textbox3 = QLineEdit(self)
+		self.textbox3.setPlaceholderText("Import seed here")
 		self.textbox3.move(50,370)
-		self.textbox3.resize(100,25)
+		self.textbox3.resize(120,25)
 		
 		self.btn7 = QPushButton("update",self)
-		self.btn7.move(50,400)
+		self.btn7.move(65,400)
 		self.btn7.clicked.connect(self.random_seed)
 		
 	#output petprescale
