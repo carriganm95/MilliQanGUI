@@ -453,12 +453,13 @@ class configure_tab(QWidget):
 	def setTitleLabel(self):
 		self.label12 = QLabel(self)
 		self.label12.setText("Python Configure Maker")
-        #self.label.setStyleSheet("border: 1px solid black;")
+		#self.label.setStyleSheet("border: 1px solid black;")
 		self.label12.setFont(QFont("Arial",30))
 		self.label12.move(300,20)
 		#self.label12.resize(150,50)
 	
 	#Set textbox for information we create in file
+
 	def setTextEdit(self):
 		self.QTE = QTextEdit(self)
 		self.QTE.move(500,100)
@@ -658,10 +659,10 @@ class configure_tab(QWidget):
 			f.write("from Demonstrator import *\n")
 			f.write("cfg = Demonstrator()\n")
 			f.write("for dgtz in cfg.Digitizers:\n")
-			f.write("        dgtz.IRQPolicy.use = False\n")
-			f.write("        for iChannel, channel in enumerate(dgtz.channels):\n")
-			f.write("        channel.enable = True\n")
-			f.write("                channel.triggerEnable = False\n")
+			f.write("		 dgtz.IRQPolicy.use = False\n")
+			f.write("		 for iChannel, channel in enumerate(dgtz.channels):\n")
+			f.write("		 channel.enable = True\n")
+			f.write("				 channel.triggerEnable = False\n")
 			self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
 			f.write(self.text1)
 			self.QTE.append(self.text1)
@@ -745,9 +746,9 @@ class configure_tab(QWidget):
 	#help massage to remind user how to use this gui
 	def massage(self):
 		self.msg = QMessageBox(self)
-        #self.msg.setIcon(QMessageBox.Information)
+		#self.msg.setIcon(QMessageBox.Information)
 		self.msg.setText("This tab is using for creating configure file for MiliQan detector.\nYou can create a new file with the name you want by click create.\nWhen you want to add other digitizer or channel or group just modify the information and click append.")
-        
+		
 		self.msg.setWindowTitle("This is the help window")
 		self.retval = self.msg.exec_()
 		
