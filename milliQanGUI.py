@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #from MilliDAQ.python.Demonstrator import *
-from tab3_new import *
+from TriggerBoardTab import *
+from DAQCommandTab import*
 from Demonstrator import *
 import sys
 import logging
@@ -17,7 +18,7 @@ import select
 import os.path
 
 
-
+'''
 cfg = Demonstrator()
 
 logging.basicConfig(format = "%(message)s",level = logging.INFO)
@@ -78,7 +79,8 @@ class worker(QObject):
         p3.terminate()		#kill the variable we use
 
         self.finished.emit()
-        
+	
+'''
 #main function for the QUI
 class TabWidget(QDialog):
   
@@ -96,7 +98,7 @@ class TabWidget(QDialog):
         #add tabs to the GUI
         self.tabs  = QTabWidget()
         self.tabs.addTab(daqcommand_tab(),"DAQCommand")
-        self.tabs.addTab(configure_tab(),"Configure Maker")
+        self.tabs.addTab(configure_tab(),"Configuration File Maker")
         self.tabs.addTab(trigger_board_tab(),"Tigger board")
         
         self.layout = QVBoxLayout(self)
@@ -141,7 +143,7 @@ class TabWidget(QDialog):
         #self.setStyleSheet("background-color: Dark grey;")
             QApplication.setStyle(QStyleFactory.create('Fusion'))
             QApplication.setPalette(darkPalette)
-       
+'''
 #the mean tab for Runing DAQcommand
 class daqcommand_tab(QWidget):
     def __init__(self):
@@ -192,7 +194,8 @@ class daqcommand_tab(QWidget):
         self.printlistbtn = QPushButton("reconfigure", self)
         self.printlistbtn.move(550,200)
         self.printlistbtn.clicked.connect(self.on_clicled)
-        
+    
+    #create combolist for files we want to reconfigure
     def SetCombolist(self):
         self.combolist = QComboBox(self)
         self.combolist.move(450,200)
@@ -270,13 +273,11 @@ class daqcommand_tab(QWidget):
 		with open('/var/log/MilliDAQ.log') as f :
         #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
-        #self.QTE.setObjectName("status information")
-        #self.QTE.setPlainText(self.contents)
     
 	#Auto timer which will count time
     def SetqTimer(self):
         self.qtimer = QTimer()
-        self.qtimer.setInterval(1000)
+        self.qtimer.setInterval(1000) #the number inside is millisecond
         self.qtimer.timeout.connect(self.refreshText)
         self.qtimer.start()
         
@@ -294,9 +295,9 @@ class daqcommand_tab(QWidget):
                 QCoreApplication.processEvents()
                 
     #help windom massage
-    def massage(self):
+    def message(self):
         self.msg = QMessageBox(self)
-        #self.msg.setIcon(QMessageBox.Information)
+        
         self.msg.setText("DAQCommand: \nstart                  -- start the run\n\nstop                   -- stop the run\n\nprint [configuration | board | rates | status]: \nprint configure  -- print the current V1743Configuration parameters: trigger mode, thresholds, etc\n\nprint board      -- print information about the V1743 board: connection, firmware versions, etc\n\nprint rates       -- print DQM information: trigger rates, missed triggers, etc\n\nprint status     -- print DAQ information: state, configuration path, etc\n\nreconfigure <file.xml> -- stop the run, read/apply a new configuration file, then start\n\nYou can use combo box to choose the information you want to print out. \nYou can use the reconfigure button to reconfigure the file we generate. \nIn the end text box will udapate the information about detector in real time")
         
         self.msg.setWindowTitle("This is the help window")
@@ -322,11 +323,7 @@ class daqcommand_tab(QWidget):
         self.threadstart.finished.connect(
             lambda: self.startbtn.setEnabled(True)
         )
-        '''
-        self.threadstart.finished.connect(
-            lambda: self.stepLabel.setText("Long-Running Step: 0")
-        )
-        '''
+
 	#long run stop which can start a new thread to start a new run
     def longrun_stop(self):
         # Create a QThread object
@@ -348,11 +345,7 @@ class daqcommand_tab(QWidget):
         self.threadstop.finished.connect(
             lambda: self.stopbtn.setEnabled(True)
         )
-        '''
-        self.threadstop.finished.connect(
-            lambda: self.stepLabel.setText("Long-Running Step: 0")
-        )
-        '''
+ 
 	#long run status which can start a new thread to start a new run
     def longrun_status(self):
         # Create a QThread object
@@ -374,11 +367,7 @@ class daqcommand_tab(QWidget):
         self.threadstatus.finished.connect(
             lambda: self.statusbtn.setEnabled(True)
         )
-        '''
-        self.threadstatus.finished.connect(
-            lambda: self.stepLabel.setText("Long-Running Step: 0")
-        )
-        '''
+
 	#long run print which can kill the trail we donn't want when we use the DAQcommand
     def longrun_print(self):
     # Create a QThread object
@@ -451,11 +440,11 @@ class configure_tab(QWidget):
 	
 	#set title for this tab
 	def setTitleLabel(self):
-		self.label12 = QLabel(self)
-		self.label12.setText("Python Configure Maker")
+		self.labeltitle = QLabel(self)
+		self.labeltitle.setText("Python Configuration Maker")
 		#self.label.setStyleSheet("border: 1px solid black;")
-		self.label12.setFont(QFont("Arial",30))
-		self.label12.move(300,20)
+		self.labeltitle.setFont(QFont("Arial",30))
+		self.labeltitle.move(300,20)
 		#self.label12.resize(150,50)
 	
 	#Set textbox for information we create in file
@@ -474,9 +463,9 @@ class configure_tab(QWidget):
 		self.comboboxdgtz.addItems(self.list_dgtz)
 		self.comboboxdgtz.currentTextChanged.connect(self.update_dgtz)
 		
-		self.label8 = QLabel(self)
-		self.label8.setText("Digitizers")
-		self.label8.move(100,100)
+		self.labelcombodgtz = QLabel(self)
+		self.labelcombodgtz.setText("Digitizers")
+		self.labelcombodgtz.move(100,100)
 	
 	#Function to update digitizer number
 	def update_dgtz(self,value):
@@ -492,9 +481,9 @@ class configure_tab(QWidget):
 		self.comboboxchannel.addItems(self.list_channel)
 		self.comboboxchannel.currentTextChanged.connect(self.update_channel)
 		
-		self.label9 = QLabel(self)
-		self.label9.setText("Channel")
-		self.label9.move(100,200)
+		self.labecombochannel = QLabel(self)
+		self.labecombochannel.setText("Channel")
+		self.labecombochannel.move(100,200)
 		
 	#Function to update channel number
 	def update_channel(self,value):
@@ -503,9 +492,9 @@ class configure_tab(QWidget):
 	
 	#Choose triigerenable
 	def setTriggerEnableBtn(self):
-		self.label3 = QLabel(self)
-		self.label3.setText("triggerEnable")
-		self.label3.move(200,250)
+		self.labeltriggerenable = QLabel(self)
+		self.labeltriggerenable.setText("triggerEnable")
+		self.labeltriggerenable.move(200,250)
 	
 		self.comboboxtype = QComboBox(self)
 		self.comboboxtype.move(310,250)
@@ -519,14 +508,14 @@ class configure_tab(QWidget):
 	
 	#choose trigger polarity type
 	def setTriggerPolarityBtn(self):
-		self.label4 = QLabel(self)
-		self.label4.setText("triggerPolarity")
-		self.label4.move(200,300)
+		self.labeltriggerpolarity = QLabel(self)
+		self.labeltriggerpolarity.setText("triggerPolarity")
+		self.labeltriggerpolarity.move(200,300)
 	
-		self.comboboxtype2 = QComboBox(self)
-		self.comboboxtype2.move(310,300)
-		self.comboboxtype2.addItems(["risingEdge","fallingEdge"])
-		self.comboboxtype2.currentTextChanged.connect(self.update_triggerpolarity)
+		self.comboboxtpolarity = QComboBox(self)
+		self.comboboxtpolarity.move(310,300)
+		self.comboboxtpolarity.addItems(["risingEdge","fallingEdge"])
+		self.comboboxtpolarity.currentTextChanged.connect(self.update_triggerpolarity)
 	
 	#function to update polarity type
 	def update_triggerpolarity(self,value):
@@ -535,15 +524,14 @@ class configure_tab(QWidget):
 	
 	#Choose trigger Threshold
 	def setTriggerThresholdBtn(self):
-		self.label4 = QLabel(self)
-		self.label4.setText("triggerThreshold")
-		self.label4.move(200,350)
+		self.labeltriggerthreshold = QLabel(self)
+		self.labeltriggerthreshold.setText("triggerThreshold")
+		self.labeltriggerthreshold.move(200,350)
 
-		self.textbox1 = QLineEdit(self)
-		self.textbox1.move(310,350)
-		self.textbox1.resize(100,30)
-		#self.textvalue1 = self.textbox1.text()
-		#print(self.textvalue1)
+		self.textboxtriggerthreshold = QLineEdit(self)
+		self.textboxtriggerthreshold.move(310,350)
+		self.textboxtriggerthreshold.resize(100,30)
+
 	
 	#Choose Group
 	def setCombolistGroup(self):
@@ -554,9 +542,9 @@ class configure_tab(QWidget):
 		self.comboboxgroup.addItems(self.list_group)
 		self.comboboxgroup.currentTextChanged.connect(self.update_group)
 
-		self.label10 = QLabel(self)
-		self.label10.setText("Group")
-		self.label10.move(100,400)
+		self.labelcombogroup = QLabel(self)
+		self.labelcombogroup.setText("Group")
+		self.labelcombogroup.move(100,400)
 		
 	#update group number
 	def update_group(self,value):
@@ -565,25 +553,25 @@ class configure_tab(QWidget):
 	
 	#Choose Trigger delay
 	def setTriggerDelayBtn(self):
-		self.label6 = QLabel(self)
-		self.label6.setText("TriggerDelay")
-		self.label6.move(200,450)
+		self.labeltriggerdelay = QLabel(self)
+		self.labeltriggerdelay.setText("TriggerDelay")
+		self.labeltriggerdelay.move(200,450)
 
-		self.textbox2 = QLineEdit(self)
-		self.textbox2.move(300,450)
-		self.textbox2.resize(100,30)
+		self.textboxtriggerdelay = QLineEdit(self)
+		self.textboxtriggerdelay.move(300,450)
+		self.textboxtriggerdelay.resize(100,30)
 		#self.textvalue2 = self.textbox2.text()
 	
 	#Choose trigger type
 	def setTriggerTypeBtn(self):
-		self.label1 = QLabel(self)
-		self.label1.setText("TriggerType")
-		self.label1.move(100,550)
+		self.labeltriggertype = QLabel(self)
+		self.labeltriggertype.setText("TriggerType")
+		self.labeltriggertype.move(100,550)
 
-		self.comboboxtype3 = QComboBox(self)
-		self.comboboxtype3.move(200,550)
-		self.comboboxtype3.addItems(["software","normal","auto","external","externalAndNormal","externalOrNormal","none"])
-		self.comboboxtype3.currentTextChanged.connect(self.update_triggertype)
+		self.comboboxtriggertype = QComboBox(self)
+		self.comboboxtriggertype.move(200,550)
+		self.comboboxtriggertype.addItems(["software","normal","auto","external","externalAndNormal","externalOrNormal","none"])
+		self.comboboxtriggertype.currentTextChanged.connect(self.update_triggertype)
 	
 	#update triggertype
 	def update_triggertype(self,value):
@@ -663,30 +651,30 @@ class configure_tab(QWidget):
 			f.write("		 for iChannel, channel in enumerate(dgtz.channels):\n")
 			f.write("		 channel.enable = True\n")
 			f.write("				 channel.triggerEnable = False\n")
-			self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
-			f.write(self.text1)
-			self.QTE.append(self.text1)
-			self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
-			f.write(self.text2)
-			self.QTE.append(self.text2)
-			self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
-			f.write(self.text3)
-			self.QTE.append(self.text3)
+			self.triggertypetemp = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
+			f.write(self.triggertypetemp)
+			self.QTE.append(self.triggertypetemp)
+			self.grouptriggerlogictemp = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
+			f.write(self.grouptriggerlogictemp)
+			self.QTE.append(self.grouptriggerlogictemp)
+			self.triggerenabletemp = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
+			f.write(self.triggerenabletemp)
+			self.QTE.append(self.triggerenabletemp)
 			if self.textvalue1 != "" :
-				self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
-				f.write(self.text4)
-				self.QTE.append(self.text4)
-			self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
-			f.write(self.text5)
-			self.QTE.append(self.text5)
+				self.triggerthresholdtemp = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
+				f.write(self.triggerthresholdtemp)
+				self.QTE.append(self.triggerthresholdtemp)
+			self.triggerpolaritytemp = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
+			f.write(self.triggerpolaritytemp)
+			self.QTE.append(self.triggerpolaritytemp)
 			if self.textvalue2 != "" :
-				self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
-				f.write(self.text6)
-				self.QTE.append(self.text6)
+				self.maxnumeventsblttemp = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
+				f.write(self.maxnumeventsblttemp)
+				self.QTE.append(self.maxnumeventsblttemp)
 			if self.textvalue3 != "" :
-				self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
-				f.write(self.text7)
-				self.QTE.append(self.text7)
+				self.triggerdelaytemp = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
+				f.write(self.triggerdelaytemp)
+				self.QTE.append(self.triggerdelaytemp)
 			
 			f.close()
 		
@@ -702,39 +690,37 @@ class configure_tab(QWidget):
 		f = open(self.filename,"r+")
 		text = f.read()
 
-		self.text1 = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
-		if self.text1 not in text :
-			f.write(self.text1)
-			self.QTE.append(self.text1)
-		#else :
-			#print("ok")
-		self.text2 = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
-		if self.text2 not in text :
-			f.write(self.text2)
-			self.QTE.append(self.text2)
-		self.text3 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
-		if self.text3 not in text :
-			f.write(self.text3)
-			self.QTE.append(self.text3)
+		self.triggertypetemp = self.DGTZ + self.Dgtz + "].TriggerType.type = " + self.triggertype +"\n"
+		if self.triggertypetemp not in text :
+			f.write(self.triggertypetemp)
+			self.QTE.append(self.triggertypetemp)
+		self.grouptriggerlogictemp = self.DGTZ + self.Dgtz + "].GroupTriggerLogic.logic = " + self.triggerlogic + "\n"
+		if self.grouptriggerlogictemp not in text :
+			f.write(self.grouptriggerlogictemp)
+			self.QTE.append(self.grouptriggerlogictemp)
+		self.triggerenabletemp = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerEnable = " + self.enabletype +  "\n"
+		if self.triggerenabletemp not in text :
+			f.write(self.triggerenabletemp)
+			self.QTE.append(self.triggerenabletemp)
 		if self.textvalue1 != "" :
-			self.text4 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
-			if self.text4 not in text :
-				f.write(self.text4)
-				self.QTE.append(self.text4)
-		self.text5 = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
-		if self.text5 not in text :
-			f.write(self.text5)
-			self.QTE.append(self.text5)
+			self.triggerthresholdtemp = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerThreshold = " + self.textvalue1 + "\n"
+			if self.triggerthresholdtemp not in text :
+				f.write(self.triggerthresholdtemp)
+				self.QTE.append(self.triggerthresholdtemp)
+		self.triggerpolaritytemp = self.DGTZ + self.Dgtz + "].channels[" + self.Channel + "].triggerPolarity = " + self.polaritytype + "\n"
+		if self.triggerpolaritytemp not in text :
+			f.write(self.triggerpolaritytemp)
+			self.QTE.append(self.triggerpolaritytemp)
 		if self.textvalue2 != "" :
-			self.text6 = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
-			if self.text6 not in text :
-				f.write(self.text6)
-				self.QTE.append(self.text6)
+			self.maxnumeventsblttemp = self.DGTZ + self.Dgtz + "].MaxNumEventsBLT = " + self.textvalue2 + "\n"
+			if self.maxnumeventsblttemp not in text :
+				f.write(self.maxnumeventsblttemp)
+				self.QTE.append(self.maxnumeventsblttemp)
 		if self.textvalue3 != "" :
-			self.text7 = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
-			if self.text7 not in text :
-				f.write(self.text7)
-				self.QTE.append(self.text7)
+			self.triggerdelaytemp = self.DGTZ + self.Dgtz + "].groups[" + self.Group + "].triggerDelay = " + self.textvalue3 + "\n"
+			if self.triggerdelaytemp not in text :
+				f.write(self.triggerdelaytemp)
+				self.QTE.append(self.triggerdelaytemp)
 		f.close()
 	
 	#set up help btn
@@ -743,15 +729,15 @@ class configure_tab(QWidget):
 		self.helpbtn.move(200, 100)
 		self.helpbtn.clicked.connect(self.massage)
         
-	#help massage to remind user how to use this gui
-	def massage(self):
+	#help message to remind user how to use this gui
+	def message(self):
 		self.msg = QMessageBox(self)
 		#self.msg.setIcon(QMessageBox.Information)
-		self.msg.setText("This tab is using for creating configure file for MiliQan detector.\nYou can create a new file with the name you want by click create.\nWhen you want to add other digitizer or channel or group just modify the information and click append.")
+		self.msg.setText("This tab is using for creating python configuration files for the MiliQan detector.\nYou can create a new file with the name you want by clicking create.\nWhen you want to add other digitizers, channels, or groups just modify the information and click append.")
 		
 		self.msg.setWindowTitle("This is the help window")
 		self.retval = self.msg.exec_()
-		
+'''
 #main function to run the GUI
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
