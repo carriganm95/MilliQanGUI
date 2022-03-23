@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from triggerBoard.py import *
+from triggerBoard import *
 import sys
 import logging
 import subprocess
@@ -107,7 +107,7 @@ class trigger_board_tab(QWidget):
 	def setToggleTriggerRollingBtn(self):
 		self.triggerrollingbtn = QPushButton("Toggle Trigger\n Rolling",self)
 		self.triggerrollingbtn.resize(120,120)
-		self.triggerroliingbtn.move(350,300)
+		self.triggerrollingbtn.move(350,300)
 		self.triggerrollingbtn.clicked.connect(self.toggle_trigger)
 		
 	#output get clock cycles/last trigger fired
@@ -115,7 +115,7 @@ class trigger_board_tab(QWidget):
 		self.clockcyclesbtn = QPushButton("Toggle Trigger\n Rolling",self)
 		self.clockcyclesbtn.resize(120,120)
 		self.clockcyclesbtn.move(500,300)
-		self.btn17.clicked.connect(self.clock_cycle)
+		self.clockcyclesbtn.clicked.connect(self.clock_cycle)
 		
 	#reset clock
 	def setReClockBtn(self):

@@ -348,7 +348,7 @@ class configure_tab(QWidget):
 	def SetHelpButton(self):
 		self.helpbtn = QPushButton("help",self)
 		self.helpbtn.move(200, 100)
-		self.helpbtn.clicked.connect(self.massage)
+		self.helpbtn.clicked.connect(self.message)
         
 	#help message to remind user how to use this gui
 	def message(self):
