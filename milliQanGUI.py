@@ -5,7 +5,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #from MilliDAQ.python.Demonstrator import *
 from TriggerBoardTab import *
-from DAQCommandTab import*
+from DAQCommandTab import *
+from ConfigurationFileTab import *
 from Demonstrator import *
 import sys
 import logging
