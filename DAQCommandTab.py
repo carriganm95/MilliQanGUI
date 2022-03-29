@@ -102,7 +102,7 @@ class daqcommand_tab(QWidget):
     def Setimage(self):
         self.label = QLabel(self)
         #self.pixmap = QPixmap('/Users/mr-right/physics/research2/MilliQanGUI/MicrosoftTeams-image.png')
-		self.pixmap = QPixmap('Images/MilliQanLogo.png')
+        self.pixmap = QPixmap('Images/MilliQanLogo.png')
         self.label.setPixmap(self.pixmap.scaled(310,120))
         self.label.move(50,10)
         self.label.adjustSize()
@@ -136,7 +136,7 @@ class daqcommand_tab(QWidget):
     def SetHelpButton(self):
         self.helpbtn = QPushButton("help",self)
         self.helpbtn.move(750, 200)
-        self.helpbtn.clicked.connect(self.massage)
+        self.helpbtn.clicked.connect(self.message)
         
     def on_combobox_func(self, text):                                                    # +++
         self.current_text  = "DAQCommand reconfigure ../../config/" + text
@@ -198,7 +198,7 @@ class daqcommand_tab(QWidget):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
-		with open('/var/log/MilliDAQ.log') as f :
+        with open('/var/log/MilliDAQ.log') as f :
         #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
     
