@@ -147,7 +147,7 @@ class trigger_board_tab(QWidget):
 		self.textboxforhistogram.resize(120,25)
 		
 		#set up the button
-		self.histogramnumbtn = QPushButton("Histogram to Send",self)
+		self.histogramnumbtn = QPushButton("Histogram \nto Send",self)
 		self.histogramnumbtn.resize(120,120)
 		self.histogramnumbtn.move(50,535)
 		self.histogramnumbtn.clicked.connect(self.histogram)
