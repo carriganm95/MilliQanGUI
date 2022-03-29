@@ -8,6 +8,7 @@ from TriggerBoardTab import *
 from DAQCommandTab import *
 from ConfigurationFileTab import *
 from Demonstrator import *
+from MatchFigureTab import *
 import sys
 import logging
 import subprocess
@@ -101,6 +102,7 @@ class TabWidget(QDialog):
         self.tabs.addTab(daqcommand_tab(),"DAQCommand")
         self.tabs.addTab(configure_tab(),"Configuration File Maker")
         self.tabs.addTab(trigger_board_tab(),"Tigger board")
+        self.tabs.addTab(checking_match_tab(),"Match Figure")
         
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.tabs)
