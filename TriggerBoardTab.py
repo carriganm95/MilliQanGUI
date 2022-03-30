@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from triggerBoard import *
+from new_DAQCommand import *
 import sys
 import logging
 import subprocess
@@ -18,24 +19,25 @@ class trigger_board_tab(QWidget):
 		
 		#set up all the buttons and textbox in this tab
 		self.setTitleLabel()
-		self.setFirmwareBtn()
+		
+		btn_size(self,"Firmware Version",50,100,self.firmware,120,120) #output firmware version
+		btn_size(self,"Toggle Output\n Enable",200,100,self.Toggle_output_enable,120,120) #output Toggle Output Enable
+		btn_size(self,"Toggle Clock\n Inputs",350,100,self.Toggle_clock_inputs,120,120) #output Toggle Clock input
+		btn_size(self,"Adjust Clock\n Phase",500,100,self.adjust_clock_phase,120,120) #output adjust clock phase
+		btn_size(self,"Get Active\n Clock",650,100,self.active_clock,120,120) #output get active clock
+		btn_size(self,"Toggle Phase",800,100,self.toggle_phase,120,120) #output toggle phase(up/down)
+		btn_size(self,"Send Histogram", 50,300,self.send_histogram,120,120) #output Send Histogram
+		btn_size(self,"Adjust Clock 1\n Phase",200,300,self.adjust_clock1,120,120) #output adjust clock 1 phase
+		btn_size(self,"Toggle Trigger\n Rolling",350,300,self.toggle_trigger,120,120) #output Toggle Trigger Rolling
+		btn_size(self,"Clock cycles",500,300,self.clock_cycle,120,120) #output get clock cycles/last trigger fired
+		btn_size(self,"Reset Clock",650,300,self.reset_clock,120,120) #reset clock
 		self.setCoincidenceTimeBtn()
 		self.setHistogramBtn()
-		self.setToggleOutputBtn()
-		self.setToggleClockInputBtn()
-		self.setAdjustClockPhaseBtn()
 		self.setRandomSeedBtn()
 		self.setPrescaleBtn()
-		self.setActiveClockBtn()
-		self.setTogglePhaseBtn()
-		self.setSendHistogramBtn()
 		self.setDeadTimeBtn()
-		self.setAdjustClock1Btn()
-		self.setToggleTriggerRollingBtn()
 		self.setInputTriggerMaskBtn()
 		self.setTriggerBtn()
-		self.setClockCyclesBtn()
-		self.setReClockBtn()
 	
 		
 		self.show()
@@ -46,83 +48,7 @@ class trigger_board_tab(QWidget):
 		self.label.setText("Control Trigger Board")
 		self.label.setFont(QFont("Arial",30))
 		self.label.move(300,20)
-		
-	#output firmware version
-	def setFirmwareBtn(self):
-		self.firmwarebtn = QPushButton("Firmware Version",self)
-		self.firmwarebtn.resize(120,120)
-		self.firmwarebtn.move(50,100)
-		self.firmwarebtn.clicked.connect(self.firmware)
-		
-	#output Toggle Output Enable
-	def setToggleOutputBtn(self):
-		self.toggleoutputbtn = QPushButton("Toggle Output\n Enable",self)
-		self.toggleoutputbtn.resize(120,120)
-		self.toggleoutputbtn.move(200,100)
-		self.toggleoutputbtn.clicked.connect(self.Toggle_output_enable)
-		
-	#output Toggle Clock input
-	def setToggleClockInputBtn(self):
-		self.toggleclockbtn = QPushButton("Toggle Clock\n Inputs",self)
-		self.toggleclockbtn.resize(120,120)
-		self.toggleclockbtn.move(350,100)
-		self.toggleclockbtn.clicked.connect(self.Toggle_clock_inputs)
-		
-	#output adjust clock phase
-	def setAdjustClockPhaseBtn(self):
-		self.adjustclockbtn = QPushButton("Adjust Clock\n Phase",self)
-		self.adjustclockbtn.resize(120,120)
-		self.adjustclockbtn.move(500,100)
-		self.adjustclockbtn.clicked.connect(self.adjust_clock_phase)
-		
-	#output get active clock
-	def setActiveClockBtn(self):
-		self.activeclockbtn = QPushButton("Get Active\n Clock",self)
-		self.activeclockbtn.resize(120,120)
-		self.activeclockbtn.move(650,100)
-		self.activeclockbtn.clicked.connect(self.active_clock)
-		
-	#output toggle phase(up/down)
-	def setTogglePhaseBtn(self):
-		self.togglephasebtn = QPushButton("Toggle Phase",self)
-		self.togglephasebtn.resize(120,120)
-		self.togglephasebtn.move(800,100)
-		self.togglephasebtn.clicked.connect(self.toggle_phase)
-		
-	#output Send Histogram
-	def setSendHistogramBtn(self):
-		self.histogrambtn = QPushButton("Send Histogram",self)
-		self.histogrambtn.resize(120,120)
-		self.histogrambtn.move(50,300)
-		self.histogrambtn.clicked.connect(self.send_histogram)
 
-	#output adjust clock 1 phase
-	def setAdjustClock1Btn(self):
-		self.clockbtn = QPushButton("Adjust Clock 1\n Phase",self)
-		self.clockbtn.resize(120,120)
-		self.clockbtn.move(200,300)
-		self.clockbtn.clicked.connect(self.adjust_clock1)
-		
-	#output Toggle Trigger Rolling
-	def setToggleTriggerRollingBtn(self):
-		self.triggerrollingbtn = QPushButton("Toggle Trigger\n Rolling",self)
-		self.triggerrollingbtn.resize(120,120)
-		self.triggerrollingbtn.move(350,300)
-		self.triggerrollingbtn.clicked.connect(self.toggle_trigger)
-		
-	#output get clock cycles/last trigger fired
-	def setClockCyclesBtn(self):
-		self.clockcyclesbtn = QPushButton("Toggle Trigger\n Rolling",self)
-		self.clockcyclesbtn.resize(120,120)
-		self.clockcyclesbtn.move(500,300)
-		self.clockcyclesbtn.clicked.connect(self.clock_cycle)
-		
-	#reset clock
-	def setReClockBtn(self):
-		self.reclockbtn = QPushButton("Reset Clock",self)
-		self.reclockbtn.resize(120,120)
-		self.reclockbtn.move(650,300)
-		self.reclockbtn.clicked.connect(self.reset_clock)
 
 	#output coincidence time
 	def setCoincidenceTimeBtn(self):

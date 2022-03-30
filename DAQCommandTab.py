@@ -5,6 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 #from MilliDAQ.python.Demonstrator import *
 from Demonstrator import *
+from new_DAQCommand import *
 import sys
 import logging
 import subprocess
@@ -59,7 +60,7 @@ class worker(QObject):
         p2.terminate()		#kill the variable we use
 
         self.finished.emit()
-        
+    '''
 	#Run DAQCommand print on terminal
     def clicked_print(self):
         p3 = subprocess.Popen("DAQCommand print", shell= True)  #Run this command in terminal
@@ -71,7 +72,7 @@ class worker(QObject):
         p3.terminate()		#kill the variable we use
 
         self.finished.emit()
-        
+	'''
 #the mean tab for Runing DAQcommand
 class daqcommand_tab(QWidget):
     def __init__(self):
@@ -81,20 +82,23 @@ class daqcommand_tab(QWidget):
         self.onlyfile = []
 		
 		#set up every button, textbox and list on GUI
-        self.SetStartButton()
-        self.SetStartButton()
-        self.SetStopButton()
-        self.SetStatusButton()
-        self.SetPrintButton()
-        self.SetComboPrint()
-        self.SetListButton()
+		
+        #self.SetStartButton()
+        #set up all the button
+		btn(self, "start",150,150,self.longrun_start) #start the detector
+		btn(self,"reconfigure",550,200,self.on_clicked) #reconfigure the detector with different file
+		btn(self,"help",750,200,self.message) #give user a help message
+		btn(self,"Stop",300,150,self.longrun_stop) #Stop the detector
+        btn(self,"status",450,150,self.longrun_status) #Status the outcome from the detector
+		btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
+		
+		#set up the rest things in this tab
         self.Setlabel()
         self.SetCombolist()
-        self.SetCombolistButton()
         self.SetTextEdit()
         self.SetqTimer()
         self.Setimage()
-        self.SetHelpButton()
+	
         
         self.show()
 
@@ -118,10 +122,6 @@ class daqcommand_tab(QWidget):
     
         
     # To connect a combo box use: combo.activated[str].connect(self.onChanged)
-    def SetCombolistButton(self):
-        self.printlistbtn = QPushButton("reconfigure", self)
-        self.printlistbtn.move(550,200)
-        self.printlistbtn.clicked.connect(self.on_clicled)
     
     #create combolist for files we want to reconfigure
     def SetCombolist(self):
@@ -133,16 +133,13 @@ class daqcommand_tab(QWidget):
         self.combolist.currentTextChanged.connect(self.on_combobox_func)
 	
 	#Give user help about this GUI
-    def SetHelpButton(self):
-        self.helpbtn = QPushButton("help",self)
-        self.helpbtn.move(750, 200)
-        self.helpbtn.clicked.connect(self.message)
-        
+    
+    #update the file name to command we use on terminal
     def on_combobox_func(self, text):                                                    # +++
         self.current_text  = "DAQCommand reconfigure ../../config/" + text
       
 	#update the terminal information to textbox
-    def on_clicled(self):                                                                # +++
+    def on_clicked(self):                                                                # +++
         #subprocess.Popen(self.current_text, shell= True)
         p3 = subprocess.Popen(self.current_text, shell= True)
         time.sleep(5)
@@ -158,41 +155,22 @@ class daqcommand_tab(QWidget):
         self.combolist.addItems(self.onlyfile)
         
 	#DAQcommand Start
-    def SetStartButton(self):
-        self.startbtn = QPushButton("start",self)
-        self.startbtn.move(150,150)
-        self.startbtn.clicked.connect(self.longrun_start)
-        
-	#DAQcommand stop
-    def SetStopButton(self):
-        self.stopbtn = QPushButton("Stop",self)
-        self.stopbtn.move(300,150)
-        self.stopbtn.clicked.connect(self.longrun_stop)
     
+	#DAQcommand stop
+	    
     #DAQcommand status
-    def SetStatusButton(self):
-        self.statusbtn = QPushButton("status",self)
-        self.statusbtn.move(450,150)
-        self.statusbtn.clicked.connect(self.longrun_status)
-        
+ 
 	#DAQcommand print different information
-    def SetComboPrint(self):
-        self.comboprint = QComboBox(self)
-        self.comboprint.move(600,150)
-        self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
+    #def SetComboPrint(self):
+       # self.comboprint = QComboBox(self)
+       # self.comboprint.move(600,150)
+       # self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
         
 	#DAQcommand Print
-    def SetPrintButton(self):
-        self.printbtn = QPushButton("print", self)
-        self.printbtn.move(750,150)
-        self.printbtn.clicked.connect(self.longrun_print)
+		#btn(self,"print",750,150,self.longrun_print)
     
     #List all file we can use for reconfigure
-    def SetListButton(self):
-        self.listbtn = QPushButton("list",self)
-        self.listbtn.move(250,200)
-        self.listbtn.clicked.connect(self.clicked_list)
-        
+
 	#Auto update textbox which will print the information show in terminal
     def SetTextEdit(self):
         self.QTE = QTextEdit(self)
@@ -297,6 +275,7 @@ class daqcommand_tab(QWidget):
         )
 
 	#long run print which can kill the trail we donn't want when we use the DAQcommand
+	'''
     def longrun_print(self):
     # Create a QThread object
         self.threadprint = QThread()
@@ -315,8 +294,8 @@ class daqcommand_tab(QWidget):
     #Final Results
         self.printbtn.setEnabled(False)
         self.threadprint.finished.connect(
-            lambda: self.printbtn.setEnabled(True)
-        )
+            lambda: self.printbtn.setEnabled(True))
+	'''
     #function can list the file inside config
     def clicked_list(self):
         self.onlyfile =[]

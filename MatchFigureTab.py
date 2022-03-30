@@ -2,7 +2,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from triggerBoard.py import *
+from triggerBoard import *
+from new_DAQCommand import *
 import sys
 import logging
 import subprocess
@@ -19,6 +20,13 @@ class checking_match_tab(QWidget):
 		super().__init__()
 		
 		#set up all the buttons and textbox in this tab
+		btn(self, "List", 450,50, self.click_list) #List the lastest files for plot
+		btn(self, "Check",600,50, self.check_figure) #plot the checking figure
+		self.setTitleLabel()
+		self.setimage()
+		self.setCombolist()
+		
+		self.show()
 		
 	#set the title of this tab
 	def setTitleLabel(self):
@@ -38,11 +46,6 @@ class checking_match_tab(QWidget):
 		self.graphicsView.move(50,50)
 		self.graphicsView.resize(300,300)
 		
-	#List the lastest files for plot
-	def setListButton(self):
-		self.listbtn = QPushButton("list",self)
-		self.listbtn.move(450,50)
-		self.listbtn.clicked.connect(self.click_list)
 		
 	#create combolist for root files
 	def setCombolist(self):
@@ -65,12 +68,6 @@ class checking_match_tab(QWidget):
 		#update the list to combolist
 		self.combolist.clear()
 		self.combolist.addTtems(files_new)
-		
-	#plot the checking figure
-	def setCheckButton(self):
-		self.checkbtn = QPushButton("check",self)
-		self.checkbtn.move(600,50)
-		self.checkbtn.clicked.connect(self.check_figure)
 		
 	#matching the data we choose with the data we already matched
 	def check_figure(self):
