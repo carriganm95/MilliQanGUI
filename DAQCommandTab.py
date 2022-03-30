@@ -72,7 +72,7 @@ class worker(QObject):
         p3.terminate()		#kill the variable we use
 
         self.finished.emit()
-	'''
+        '''
 #the mean tab for Runing DAQcommand
 class daqcommand_tab(QWidget):
     def __init__(self):
@@ -85,12 +85,12 @@ class daqcommand_tab(QWidget):
 		
         #self.SetStartButton()
         #set up all the button
-		btn(self, "start",150,150,self.longrun_start) #start the detector
-		btn(self,"reconfigure",550,200,self.on_clicked) #reconfigure the detector with different file
-		btn(self,"help",750,200,self.message) #give user a help message
-		btn(self,"Stop",300,150,self.longrun_stop) #Stop the detector
+        btn(self, "start",150,150,self.longrun_start) #start the detector
+        btn(self,"reconfigure",550,200,self.on_clicked) #reconfigure the detector with different file
+        btn(self,"help",750,200,self.message) #give user a help message
+        btn(self,"Stop",300,150,self.longrun_stop) #Stop the detector
         btn(self,"status",450,150,self.longrun_status) #Status the outcome from the detector
-		btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
+        btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
 		
 		#set up the rest things in this tab
         self.Setlabel()
@@ -275,7 +275,7 @@ class daqcommand_tab(QWidget):
         )
 
 	#long run print which can kill the trail we donn't want when we use the DAQcommand
-	'''
+    '''
     def longrun_print(self):
     # Create a QThread object
         self.threadprint = QThread()
@@ -295,7 +295,7 @@ class daqcommand_tab(QWidget):
         self.printbtn.setEnabled(False)
         self.threadprint.finished.connect(
             lambda: self.printbtn.setEnabled(True))
-	'''
+    '''
     #function can list the file inside config
     def clicked_list(self):
         self.onlyfile =[]

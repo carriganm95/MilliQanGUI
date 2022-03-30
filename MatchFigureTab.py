@@ -37,11 +37,11 @@ class checking_match_tab(QWidget):
 		
 	#Set image space for list of file
 	def setimage(self):
-		self.graphicsView = QtWidgets.QGraphicsView(self)
-		self.scene = QtWidgets.QGraphicsScene()
-		self.pixmap = QtWidgets.QGraphicsPixmapItem()
-		self.scene.addTtem(self.pixmap)
-		self.graphicsView.setScene(scene)
+		self.graphicsView = QGraphicsView(self)
+		self.scene = QGraphicsScene()
+		self.pixmap = QGraphicsPixmapItem()
+		self.scene.addItem(self.pixmap)
+		self.graphicsView.setScene(self.scene)
 		
 		self.graphicsView.move(50,50)
 		self.graphicsView.resize(300,300)
@@ -51,7 +51,7 @@ class checking_match_tab(QWidget):
 	def setCombolist(self):
 		self.combolist = QComboBox(self)
 		self.combolist.move(450,100)
-		self.combolist.addTtem([])
+		self.combolist.addItems([])
 		self.combolist.currentTextChanged.connect(self.on_combobox_func)
 
 	#update the file names we want to plot
@@ -67,7 +67,7 @@ class checking_match_tab(QWidget):
 		
 		#update the list to combolist
 		self.combolist.clear()
-		self.combolist.addTtems(files_new)
+		self.combolist.addItems(files_new)
 		
 	#matching the data we choose with the data we already matched
 	def check_figure(self):
