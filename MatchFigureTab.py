@@ -2,7 +2,6 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from triggerBoard import *
 from new_DAQCommand import *
 import sys
 import logging
@@ -20,8 +19,8 @@ class checking_match_tab(QWidget):
 		super().__init__()
 		
 		#set up all the buttons and textbox in this tab
-		btn(self, "List", 450,50, self.click_list) #List the lastest files for plot
-		btn(self, "Check",600,50, self.check_figure) #plot the checking figure
+		btn(self, "List", 650,100, self.click_list) #List the lastest files for plot
+		btn(self, "Check",750,100, self.check_figure) #plot the checking figure
 		self.setTitleLabel()
 		self.setimage()
 		self.setCombolist()
@@ -43,14 +42,14 @@ class checking_match_tab(QWidget):
 		self.scene.addItem(self.pixmap)
 		self.graphicsView.setScene(self.scene)
 		
-		self.graphicsView.move(50,50)
-		self.graphicsView.resize(300,300)
+		self.graphicsView.move(50,100)
+		self.graphicsView.resize(500,600)
 		
 		
 	#create combolist for root files
 	def setCombolist(self):
 		self.combolist = QComboBox(self)
-		self.combolist.move(450,100)
+		self.combolist.move(650,150)
 		self.combolist.addItems([])
 		self.combolist.currentTextChanged.connect(self.on_combobox_func)
 
@@ -61,10 +60,11 @@ class checking_match_tab(QWidget):
 	#find the lastest 5 root files
 	def click_list(self):
 		path = '/home/milliqan/data/'
+		#path = '/Users/mr-right/physics/research/'
 		os.chdir(path)
 		files = sorted(os.listdir(os.getcwd()),key=os.path.getmtime)
-		files_new = files[-5:0]
-		
+		files_new = files[-5:]
+		print(files_new)
 		#update the list to combolist
 		self.combolist.clear()
 		self.combolist.addItems(files_new)
@@ -77,6 +77,8 @@ class checking_match_tab(QWidget):
 		os.system("echo Running")
 		os.system("echo ---------------")
 		os.system("root \“checkMatching.cpp(\\\“" + file + "\\\”)\"")
+		img = QtGui.QPixmap('~/Images/TestPDF.pdf')
+		self.pixmap.setPixmap(img)
 		#checkingMatching(self.current_text)
 		
 		
