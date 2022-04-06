@@ -76,11 +76,11 @@ class daqcommand_tab(QWidget):
 		
         #self.SetStartButton()
         #set up all the button
-        btn(self, "start",150,150,self.longrun_start) #start the detector
+        self.startbtn = btnlongrun(self, "start",150,150,self.longrun_start) #start the detector
         btn(self,"reconfigure",550,200,self.on_clicked) #reconfigure the detector with different file
         btn(self,"help",750,200,self.message) #give user a help message
-        btn(self,"Stop",300,150,self.longrun_stop) #Stop the detector
-        btn(self,"status",450,150,self.longrun_status) #Status the outcome from the detector
+        self.stopbtn = btnlongrun(self,"Stop",300,150,self.longrun_stop) #Stop the detector
+        self.statusbtn = btnlongrun(self,"status",450,150,self.longrun_status) #Status the outcome from the detector
         btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
         btn(self,"set",750,150,self.set_trigger) #set new trigger to serial
 		
@@ -199,7 +199,7 @@ class daqcommand_tab(QWidget):
     def message(self):
         self.msg = QMessageBox(self)
         
-        self.msg.setText("DAQCommand: \nstart                  -- start the run\n\nstop                   -- stop the run\n\nprint [configuration | board | rates | status]: \nprint configure  -- print the current V1743Configuration parameters: trigger mode, thresholds, etc\n\nprint board      -- print information about the V1743 board: connection, firmware versions, etc\n\nprint rates       -- print DQM information: trigger rates, missed triggers, etc\n\nprint status     -- print DAQ information: state, configuration path, etc\n\nreconfigure <file.xml> -- stop the run, read/apply a new configuration file, then start\n\nYou can use combo box to choose the information you want to print out. \nYou can use the reconfigure button to reconfigure the file we generate. \nIn the end text box will udapate the information about detector in real time")
+        self.msg.setText("DAQCommand: \nstart                  -- start the run\n\nstop                   -- stop the run\n\nprint [configuration | board | rates | status]: \nprint configure  -- print the current V1743Configuration parameters: trigger mode, thresholds, etc\n\nprint board      -- print information about the V1743 board: connection, firmware versions, etc\n\nprint rates       -- print DQM information: trigger rates, missed triggers, etc\n\nprint status     -- print DAQ information: state, configuration path, etc\n\nreconfigure <file.xml> -- stop the run, read/apply a new configuration file, then start\n\nYou can use combo box to choose the information you want to print out. \nYou can use the reconfigure button to reconfigure the file we generate. \nThe new drop down menu will show which trigger we are runing and you can change it by set button \nIn the end text box will udapate the information about detector in real time")
         
         self.msg.setWindowTitle("This is the help window")
         self.retval = self.msg.exec_()
@@ -220,7 +220,7 @@ class daqcommand_tab(QWidget):
         # Start the thread
         self.threadstart.start()
         # Final resets
-        #self.startbtn.setEnabled(False)
+        self.startbtn.setEnabled(False)
         self.threadstart.finished.connect(
             lambda: self.startbtn.setEnabled(True)
         )

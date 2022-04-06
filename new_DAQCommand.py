@@ -14,11 +14,18 @@ import select
 import os.path
 
 
-def btn(self, name, x, y, connect, enable=True):
+def btn(self, name, x, y, connect):
 	btnnew = QPushButton(name,self)
 	btnnew.move(x,y)
 	btnnew.clicked.connect(connect)
-	if(enable==False): btnnew.setEnabled = False
+	
+	
+	
+def btnlongrun(self,name,x,y,connect,)
+	btnnew1 = QPushButton(name,self)
+	btnnew1.move(x,y)
+	btnnew1.clicked.connect(connect)
+	return btnnew1
 	
 def btn_size(self,name,x,y,connect,x1,y1):
 	newbtn = QPushButton(name,self)
