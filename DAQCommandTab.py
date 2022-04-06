@@ -96,12 +96,15 @@ class daqcommand_tab(QWidget):
         btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
         btn(self,"set",750,150,self.set_trigger) #set new trigger to serial
 		
+		
 		#set up the rest things in this tab
         self.Setlabel()
         self.SetCombolist()
         self.SetTextEdit()
         self.SetqTimer()
         self.Setimage()
+        self.triggerlist()
+        self.setTriggerList()
 	
         
         self.show()
