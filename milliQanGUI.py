@@ -273,7 +273,7 @@ class daqcommand_tab(QWidget):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
-		with open('/var/log/MilliDAQ.log') as f :
+        with open('/var/log/MilliDAQ.log') as f :
         #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
     

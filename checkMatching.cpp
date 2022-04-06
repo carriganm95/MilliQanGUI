@@ -4,14 +4,15 @@
 #include "TH1.h"
 #include "TCanvas.h"
 #include "TTree.h"
-#include "../interface/DQM.h"
-#include "../interface/DemonstratorConstants.h"
+#include "../../interface/DQM.h"
+#include "../../interface/DemonstratorConstants.h"
 using namespace std;
 
-void checkMatching(string file){
+void checkMatching(TString file){
 
-  TFile * input = new TFile(file, "READ");
-  
+  cout << file << endl;
+  //TFile * input = new TFile(file, "READ");
+  TFile* input = TFile::Open(file);
   mdaq::GlobalEvent * evt = new mdaq::GlobalEvent();
   TTree * events = (TTree*)input->Get("Events");
   events->SetBranchAddress("event", &evt);

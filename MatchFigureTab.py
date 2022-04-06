@@ -77,7 +77,7 @@ class checking_match_tab(QWidget):
 		os.system("echo Running")
 		os.system("echo ---------------")
 		os.system("root \“checkMatching.cpp(\\\“" + file + "\\\”)\"")
-		img = QtGui.QPixmap('~/Images/TestPDF.pdf')
+		img = QPixmap('~/Images/TestPDF.pdf')
 		self.pixmap.setPixmap(img)
 		#checkingMatching(self.current_text)
 		

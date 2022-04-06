@@ -94,7 +94,7 @@ class daqcommand_tab(QWidget):
         btn(self,"Stop",300,150,self.longrun_stop) #Stop the detector
         btn(self,"status",450,150,self.longrun_status) #Status the outcome from the detector
         btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
-		btn(self,"set",750,150,self.set_trigger) #set new trigger to serial
+        btn(self,"set",750,150,self.set_trigger) #set new trigger to serial
 		
 		#set up the rest things in this tab
         self.Setlabel()
@@ -311,27 +311,25 @@ class daqcommand_tab(QWidget):
         
         self.updateCombo()
         
-	def trigger_list(self):
-		f = open("../../config/triggerDictionary.json", "r")
-		text = f.read()
-		self.triggerdictionary = json.load(text)
-		
-		self.triggerlist = []
-		for key in triggerdictionary:
-			self.triggerlist.append(key)
+    def trigger_list(self):
+        f = open("../../config/triggerDictionary.json", "r")
+        text = f.read()
+        self.triggerdictionary = json.load(text)	
+        self.triggerlist = []
+        for key in triggerdictionary:
+            self.triggerlist.append(key)
 			
-	def setTriggerList(self):
-		self.triggercombo = QComboBox(self)
+    def setTriggerList(self):
+        self.triggercombo = QComboBox(self)
         self.triggercombo.move(600,150)
         self.triggercombo.addItems(self.triggerlist)
         self.triggercombo.currentTextChanged.connect(self.on_triggercombo_func)
         
-	
-	def on_triggercombo_func(self,text):
-		self.argument = int(self.triggerdictionary[text])
+    def on_triggercombo_func(self,text):
+        self.argument = int(self.triggerdictionary[text])
 		
-	def set_trigger(self):
-		setTrigger(self.argument)
+    def set_trigger(self):
+        setTrigger(self.argument)
 	
 		
 
