@@ -265,9 +265,7 @@ class daqcommand_tab(QWidget):
         self.threadstatus.start()
         # Final resets
         self.statusbtn.setEnabled(False)
-        self.threadstatus.finished.connect(
-            lambda: self.statusbtn.setEnabled(True)
-        )
+        self.threadstatus.finished.connect(lambda: self.statusbtn.setEnabled(True))
 
 	#long run print which can kill the trail we donn't want when we use the DAQcommand
 

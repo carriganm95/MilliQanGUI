@@ -21,7 +21,7 @@ def btn(self, name, x, y, connect):
 	
 	
 	
-def btnlongrun(self,name,x,y,connect,)
+def btnlongrun(self,name,x,y,connect):
 	btnnew1 = QPushButton(name,self)
 	btnnew1.move(x,y)
 	btnnew1.clicked.connect(connect)
