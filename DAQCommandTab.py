@@ -63,19 +63,7 @@ class worker(QObject):
         p2.terminate()		#kill the variable we use
 
         self.finished.emit()
-    '''
-	#Run DAQCommand print on terminal
-    def clicked_print(self):
-        p3 = subprocess.Popen("DAQCommand print", shell= True)  #Run this command in terminal
-        time.sleep(5)			#The time counter sleep for 0.5 second
-        pid3 = p3.pid
-        tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]	#find the tail we open
-        tail3_pid = int(tail3_pid)
-        os.kill(tail3_pid,signal.SIGINT) 	#kill the tail
-        p3.terminate()		#kill the variable we use
 
-        self.finished.emit()
-        '''
 #the mean tab for Runing DAQcommand
 class daqcommand_tab(QWidget):
     def __init__(self):
@@ -103,7 +91,7 @@ class daqcommand_tab(QWidget):
         self.SetTextEdit()
         self.SetqTimer()
         self.Setimage()
-        self.triggerlist()
+        self.trigger_list()
         self.setTriggerList()
 	
         
@@ -232,7 +220,7 @@ class daqcommand_tab(QWidget):
         # Start the thread
         self.threadstart.start()
         # Final resets
-        self.startbtn.setEnabled(False)
+        #self.startbtn.setEnabled(False)
         self.threadstart.finished.connect(
             lambda: self.startbtn.setEnabled(True)
         )
@@ -282,27 +270,7 @@ class daqcommand_tab(QWidget):
         )
 
 	#long run print which can kill the trail we donn't want when we use the DAQcommand
-    '''
-    def longrun_print(self):
-    # Create a QThread object
-        self.threadprint = QThread()
-    # create a worker object
-        self.workerprint = worker()
-    #Move worker to the thread
-        self.workerprint.moveToThread(self.threadprint)
-    #Connect signals and slots
-        self.threadprint.started.connect(self.workerprint.clicked_print)
-        self.workerprint.finished.connect(self.threadprint.quit)
-        self.workerprint.finished.connect(self.workerprint.deleteLater)
-        self.threadprint.finished.connect(self.threadprint.deleteLater)
-    
-    # Start the thread
-        self.threadprint.start()
-    #Final Results
-        self.printbtn.setEnabled(False)
-        self.threadprint.finished.connect(
-            lambda: self.printbtn.setEnabled(True))
-    '''
+
     #function can list the file inside config
     def clicked_list(self):
         self.onlyfile =[]
@@ -317,9 +285,9 @@ class daqcommand_tab(QWidget):
     def trigger_list(self):
         f = open("../../config/triggerDictionary.json", "r")
         text = f.read()
-        self.triggerdictionary = json.load(text)	
+        self.triggerdictionary = json.loads(text)	
         self.triggerlist = []
-        for key in triggerdictionary:
+        for key in self.triggerdictionary:
             self.triggerlist.append(key)
 			
     def setTriggerList(self):
@@ -329,10 +297,12 @@ class daqcommand_tab(QWidget):
         self.triggercombo.currentTextChanged.connect(self.on_triggercombo_func)
         
     def on_triggercombo_func(self,text):
-        self.argument = int(self.triggerdictionary[text])
+        self.argument = int(self.triggerdictionary[text], 2)
 		
     def set_trigger(self):
-        setTrigger(self.argument)
+        trigBoard = TriggerBoard()
+        print("argument:", self.argument, type(self.argument))
+        trigBoard.setTrigger(self.argument)
 	
 		
 
