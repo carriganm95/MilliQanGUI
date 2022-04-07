@@ -149,22 +149,6 @@ class daqcommand_tab(QWidget):
         self.combolist.clear()
         self.combolist.addItems(self.onlyfile)
         
-	#DAQcommand Start
-    
-	#DAQcommand stop
-	    
-    #DAQcommand status
- 
-	#DAQcommand print different information
-    #def SetComboPrint(self):
-       # self.comboprint = QComboBox(self)
-       # self.comboprint.move(600,150)
-       # self.comboprint.addItems(["Configure", "Board", "Rate", "Status"])
-        
-	#DAQcommand Print
-		#btn(self,"print",750,150,self.longrun_print)
-    
-    #List all file we can use for reconfigure
 
 	#Auto update textbox which will print the information show in terminal
     def SetTextEdit(self):
@@ -172,7 +156,6 @@ class daqcommand_tab(QWidget):
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
         with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
     
 	#Auto timer which will count time
@@ -187,7 +170,6 @@ class daqcommand_tab(QWidget):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
         with open('/var/log/MilliDAQ.log') as f :
-        #with open('/Users/mr-right/physics/research2/textexample.log') as f :
             self.contents = f.readlines()
 
         if self.contents != self.content_temp:
