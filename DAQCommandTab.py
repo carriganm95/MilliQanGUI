@@ -70,29 +70,26 @@ class daqcommand_tab(QWidget):
         super().__init__()
         self.contents = []
         self.content_temp = []
-        self.onlyfile = []
+        self.configList = []
+        self.triggerList = []
 		
-		#set up every button, textbox and list on GUI
-		
-        #self.SetStartButton()
-        #set up all the button
+	#set up every button, textbox and list on GUI
         self.startbtn = btnlongrun(self, "start",150,150,self.longrun_start) #start the detector
-        btn(self,"reconfigure",550,200,self.on_clicked) #reconfigure the detector with different file
+        btn(self,"reconfigure",550,200,self.clickReconfigure) #reconfigure the detector with different file
+        btn(self,"set trigger",650,150,self.clickSetTrigger) #set new trigger
         btn(self,"help",750,200,self.message) #give user a help message
         self.stopbtn = btnlongrun(self,"Stop",300,150,self.longrun_stop) #Stop the detector
         self.statusbtn = btnlongrun(self,"status",450,150,self.longrun_status) #Status the outcome from the detector
         btn(self,"list",250,200,self.clicked_list) #list the file we have to reconfigure
-        btn(self,"set",750,150,self.set_trigger) #set new trigger to serial
 		
 		
-		#set up the rest things in this tab
+	#set up the rest things in this tab
         self.Setlabel()
-        self.SetCombolist()
+        self.SetReconfigureList()
         self.SetTextEdit()
         self.SetqTimer()
         self.Setimage()
-        self.trigger_list()
-        self.setTriggerList()
+        self.SetTriggerList()
 	
         
         self.show()
@@ -119,36 +116,56 @@ class daqcommand_tab(QWidget):
     # To connect a combo box use: combo.activated[str].connect(self.onChanged)
     
     #create combolist for files we want to reconfigure
-    def SetCombolist(self):
-        self.combolist = QComboBox(self)
-        self.combolist.move(450,200)
-        self.combolist.addItems([])
-        #self.combolist.currentTextChanged.connect(self.updateCombo)
-        #self.combolist.currentTextChanged.connect(self.updateCombo)
-        self.combolist.currentTextChanged.connect(self.on_combobox_func)
+    def SetReconfigureList(self):
+        self.reconfiglist = QComboBox(self)
+        self.reconfiglist.move(450,200)
+        self.reconfiglist.addItems([])
+        self.reconfiglist.currentTextChanged.connect(self.reconfigureCommand)
 	
 	#Give user help about this GUI
     
     #update the file name to command we use on terminal
-    def on_combobox_func(self, text):                                                    # +++
-        self.current_text  = "DAQCommand reconfigure ../../config/" + text
+    def reconfigureCommand(self, text):                                                    
+        self.reconfigure_text  = "DAQCommand reconfigure ../../config/" + text
       
-	#update the terminal information to textbox
-    def on_clicked(self):                                                                # +++
-        #subprocess.Popen(self.current_text, shell= True)
-        p3 = subprocess.Popen(self.current_text, shell= True)
+    #update the terminal information to textbox
+    def clickReconfigure(self):                                                                
+        p3 = subprocess.Popen(self.reconfigure_text, shell= True)
         time.sleep(5)
         pid3 = p3.pid
         tail3_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
         tail3_pid = int(tail3_pid)
         os.kill(tail3_pid,signal.SIGINT)
         p3.terminate()
+   
+    #create combolist for files we want to reconfigure
+    def SetTriggerList(self):
+        self.triggerlist = QComboBox(self)
+        self.triggerlist.move(550,150)
+        self.triggerlist.addItems([])
+        self.triggerlist.currentTextChanged.connect(self.triggerCommand)
+
+    #update the file name to command we use on terminal
+    def triggerCommand(self, text):
+        self.trigger_text  = "DAQCommand setTrigger ../../config/" + text
+ 
+    def clickSetTrigger(self):
+        p = subprocess.Popen(self.trigger_text, shell = True)
+        time.sleep(5)
+        pid = p.pid
+        tail_pid = subprocess.Popen("ps aux | grep -i 'tail -f /var/log/MilliDAQ.log' | pgrep 'tail'", shell = True,stdout = subprocess.PIPE).communicate()[0]
+        tail_pid = int(tail_pid)
+        os.kill(tail_pid, signal.SIGINT)
+        p.terminate()
     
     #list the file can configure
-    def updateCombo(self):
-        self.combolist.clear()
-        self.combolist.addItems(self.onlyfile)
+    def updateConfigCombo(self):
+        self.reconfiglist.clear()
+        self.reconfiglist.addItems(self.configList)
         
+    def updateTriggerCombo(self):
+        self.triggerlist.clear()
+        self.triggerlist.addItems(self.triggerList)
 
 	#Auto update textbox which will print the information show in terminal
     def SetTextEdit(self):
@@ -249,42 +266,19 @@ class daqcommand_tab(QWidget):
         self.statusbtn.setEnabled(False)
         self.threadstatus.finished.connect(lambda: self.statusbtn.setEnabled(True))
 
-	#long run print which can kill the trail we donn't want when we use the DAQcommand
-
     #function can list the file inside config
     def clicked_list(self):
-        self.onlyfile =[]
-        for filename in glob.glob("../../config/*.py"):
-            self.onlyfile.append(filename.split('/')[-1])
-            
-        for file in self.onlyfile:
-            print(filename,'\n')
+        self.configList =[]
+        for filename in os.listdir("../../config/daqConfig/"):
+            if not filename.endswith(".py"): continue
+            self.configList.append(filename)
+        for filename in os.listdir("../../config/triggerConfig/"):
+            if not filename.endswith(".py"): continue
+            self.triggerList.append(filename)
+        self.updateConfigCombo()
+        self.updateTriggerCombo()
         
-        self.updateCombo()
-        
-    def trigger_list(self):
-        f = open("../../config/triggerDictionary.json", "r")
-        text = f.read()
-        self.triggerdictionary = json.loads(text)	
-        self.triggerlist = []
-        for key in self.triggerdictionary:
-            self.triggerlist.append(key)
-			
-    def setTriggerList(self):
-        self.triggercombo = QComboBox(self)
-        self.triggercombo.move(600,150)
-        self.triggercombo.addItems(self.triggerlist)
-        self.triggercombo.currentTextChanged.connect(self.on_triggercombo_func)
-        
-    def on_triggercombo_func(self,text):
-        self.argument = int(self.triggerdictionary[text], 2)
-		
-    def set_trigger(self):
-        trigBoard = TriggerBoard()
-        print("argument:", self.argument, type(self.argument))
-        trigBoard.setTrigger(self.argument)
 	
-		
 
 
 
