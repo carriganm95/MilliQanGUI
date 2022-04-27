@@ -59,8 +59,8 @@ class checking_match_tab(QWidget):
 		
 	#find the lastest 5 root files
 	def click_list(self):
-		path = '/home/milliqan/data/'
-		#path = '/Users/mr-right/physics/research/'
+		#path = '/home/milliqan/data/'
+		path = '/Users/mr-right/physics/research/'
 		os.chdir(path)
 		files = sorted(os.listdir(os.getcwd()),key=os.path.getmtime)
 		files_new = files[-5:]
@@ -71,12 +71,13 @@ class checking_match_tab(QWidget):
 		
 	#matching the data we choose with the data we already matched
 	def check_figure(self):
-		file = "checkMatching.cpp"
+		filename = self.current_text
+		filestring = 'root "checkMatching.cpp(\\"' + filename +  ' \\")"'
 		#os.system("echo Compiling " + file)
 		#os.system("g++ " + file + " -o run.exe")
 		os.system("echo Running")
 		os.system("echo ---------------")
-		os.system("root \“checkMatching.cpp(\\\“" + file + "\\\”)\"")
+		os.system(filestring)
 		img = QPixmap('~/Images/TestPDF.pdf')
 		self.pixmap.setPixmap(img)
 		#checkingMatching(self.current_text)
