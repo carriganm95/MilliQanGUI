@@ -59,19 +59,20 @@ class checking_match_tab(QWidget):
 		
 	#find the lastest 5 root files
 	def click_list(self):
-		path = '/home/milliqan/data/*.root'
+		path = '/home/milliqan/data/'
 		#path = '/Users/mr-right/physics/research/'
 		os.chdir(path)
 		files = sorted(os.listdir(os.getcwd()),key=os.path.getmtime)
 		files_new = files[-10:]
+		files_list = []
 		print(files_new)
 		for filename in files_new:
-			if filename.startwith("MilliQan"):
+			if filename.startswith("MilliQan"):
 				files_list.append(filename)
 		files_list = files_list[-5:]
 		#update the list to combolist
 		self.combolist.clear()
-		self.combolist.addItems(files_new)
+		self.combolist.addItems(files_list)
 		
 	#matching the data we choose with the data we already matched
 	def check_figure(self):
