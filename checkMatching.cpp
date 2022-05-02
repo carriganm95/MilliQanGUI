@@ -85,19 +85,19 @@ void checkMatching(TString file){
   c2->cd();
   h_unMatched->Draw("HIST TEXT");
 
-  c1->SaveAs("TestPDF.pdf");
-
+  c1->SaveAs("/home/milliqan/MilliDAQ/plots/TestPDF.pdf");
+/*
   double oneBoard = h_numBoardsMatched->GetBinContent(2);
   double twoBoards = h_numBoardsMatched->GetBinContent(3);
   double threeBoards = h_numBoardsMatched->GetBinContent(4);
   double fourBoards = h_numBoardsMatched->GetBinContent(5);
 	
 	ofstream myfile;
-	myfile.open("new example.txt");
+	myfile.open("home/milliqan/Milliqan/MilliDAQ/plots/new example.txt");
 	myfile << oneBoard << " " << twoBoards << " " << threeBoards << " " << fourBoards << endl;
 
 	myfile << "Matching Efficiency: " << (fourBoards) / (double)(oneBoard + twoBoards + threeBoards + fourBoards) << endl;
 
 	myfile.close();
-
+*/
 }
