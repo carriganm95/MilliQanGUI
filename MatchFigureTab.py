@@ -76,7 +76,7 @@ class checking_match_tab(QWidget):
 	#matching the data we choose with the data we already matched
 	def check_figure(self):
 		filename = self.current_text
-		filestring = 'root "checkMatching.cpp(\\"' + filename +  ' \\")"'
+		filestring = 'root "/home/milliqan/MilliDAQ/gui/MilliQanGUI/checkMatching.cpp(\\"' + filename +  ' \\")"'
 		#os.system("echo Compiling " + file)
 		#os.system("g++ " + file + " -o run.exe")
 		#os.system("echo Running")

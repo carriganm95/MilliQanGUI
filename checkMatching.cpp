@@ -53,6 +53,7 @@ void checkMatching(TString file){
   TCanvas* c2 = new TCanvas("c2", "c2", 600, 600);
 
   for(int i=0; i < events->GetEntries(); i++){
+        if(i%100) std::cout << "Working on event" << i << std::endl;
 
   	bool boardMatched[nDigitizers] = {0};
   	int numMatched = 0;
