@@ -59,12 +59,15 @@ class checking_match_tab(QWidget):
 		
 	#find the lastest 5 root files
 	def click_list(self):
-		#path = '/home/milliqan/data/'
-		path = '/Users/mr-right/physics/research/'
-		os.chdir(path)
-		files = sorted(os.listdir(os.getcwd()),key=os.path.getmtime)
-		files_new = files[-5:]
-		print(files_new)
+		path = '/home/milliqan/data/*.root'
+		#path = '/Users/mr-right/physics/research/'
+		files_new = []
+		files = glob.glob(path)
+		for i in range(len(files)):
+			if file[i].startwith("MilliQan"):
+				files_new.append(file[i])
+				
+		files_new = files_new[-5:]
 		#update the list to combolist
 		self.combolist.clear()
 		self.combolist.addItems(files_new)
@@ -75,10 +78,10 @@ class checking_match_tab(QWidget):
 		filestring = 'root "checkMatching.cpp(\\"' + filename +  ' \\")"'
 		#os.system("echo Compiling " + file)
 		#os.system("g++ " + file + " -o run.exe")
-		os.system("echo Running")
-		os.system("echo ---------------")
+		#os.system("echo Running")
+		#os.system("echo ---------------")
 		os.system(filestring)
-		img = QPixmap('~/Images/TestPDF.pdf')
+		img = QPixmap('/home/milliqan/MilliDAQ/plots/TestPDF.pdf')
 		self.pixmap.setPixmap(img)
 		#checkingMatching(self.current_text)
 		
