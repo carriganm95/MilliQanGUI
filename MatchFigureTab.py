@@ -61,13 +61,14 @@ class checking_match_tab(QWidget):
 	def click_list(self):
 		path = '/home/milliqan/data/*.root'
 		#path = '/Users/mr-right/physics/research/'
-		files_new = []
-		files = glob.glob(path)
-		for i in range(len(files)):
-			if file[i].startwith("MilliQan"):
-				files_new.append(file[i])
-				
-		files_new = files_new[-5:]
+		os.chdir(path)
+		files = sorted(os.listdir(os.getcwd()),key=os.path.getmtime)
+		files_new = files[-10:]
+		print(files_new)
+		for filename in files_new:
+			if filename.startwith("MilliQan"):
+				files_list.append(filename)
+		files_list = files_list[-5:]
 		#update the list to combolist
 		self.combolist.clear()
 		self.combolist.addItems(files_new)
