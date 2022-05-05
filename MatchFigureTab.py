@@ -63,21 +63,27 @@ class checking_match_tab(QWidget):
 		#path = '/Users/mr-right/physics/research/'
 		os.chdir(path)
 		files = sorted(os.listdir(os.getcwd()),key=os.path.getmtime)
-		files_new = files[-5:]
+		files_new = files[-10:]
+		files_list = []
 		print(files_new)
+		for filename in files_new:
+			if filename.startswith("MilliQan"):
+				files_list.append(filename)
+		files_list = files_list[-5:]
 		#update the list to combolist
 		self.combolist.clear()
-		self.combolist.addItems(files_new)
+		self.combolist.addItems(files_list)
 		
 	#matching the data we choose with the data we already matched
 	def check_figure(self):
-		file = "checkMatching.cpp"
+		filename = self.current_text
+		filestring = 'root "/home/milliqan/MilliDAQ/gui/MilliQanGUI/checkMatching.cpp(\\"' + filename +  ' \\")"'
 		#os.system("echo Compiling " + file)
 		#os.system("g++ " + file + " -o run.exe")
-		os.system("echo Running")
-		os.system("echo ---------------")
-		os.system("root \“checkMatching.cpp(\\\“" + file + "\\\”)\"")
-		img = QPixmap('~/Images/TestPDF.pdf')
+		#os.system("echo Running")
+		#os.system("echo ---------------")
+		os.system(filestring)
+		img = QPixmap('/home/milliqan/MilliDAQ/plots/TestPDF.pdf')
 		self.pixmap.setPixmap(img)
 		#checkingMatching(self.current_text)
 		

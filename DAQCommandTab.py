@@ -172,6 +172,7 @@ class daqcommand_tab(QWidget):
         self.QTE = QTextEdit(self)
         self.QTE.move(150,250)
         self.QTE.resize(700,400)
+        #with open('/Users/mr-right/physics/research2/textexample.log') as f:
         with open('/var/log/MilliDAQ.log') as f :
             self.contents = f.readlines()
     
@@ -186,6 +187,7 @@ class daqcommand_tab(QWidget):
     def refreshText(self):
         self.content_temp = self.contents
         linenumber = len(self.content_temp)
+        #with open('/Users/mr-right/physics/research2/textexample.log') as f:
         with open('/var/log/MilliDAQ.log') as f :
             self.contents = f.readlines()
 
@@ -264,7 +266,9 @@ class daqcommand_tab(QWidget):
         self.threadstatus.start()
         # Final resets
         self.statusbtn.setEnabled(False)
-        self.threadstatus.finished.connect(lambda: self.statusbtn.setEnabled(True))
+        self.threadstatus.finished.connect(
+        lambda: self.statusbtn.setEnabled(True)
+        )
 
     #function can list the file inside config
     def clicked_list(self):
